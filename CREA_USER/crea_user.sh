@@ -41,7 +41,7 @@ CREA_USER=$USER_LOGIN
 CREA_GROUP=$USER_LOGIN
 #DOSSIER
 DIR_HOME=/home/$USER_LOGIN
-DIR_MAIL=/var/mail/$USER_LOGIN
+DIR_MAIL=/var/mail
 DIR_HOME_PROJECT=/home/$USER_LOGIN/projects
 DIR_TPL=$PATHROOT/tpl
 # Affichage des parametres
@@ -80,12 +80,15 @@ echo -e "$USER_PASSWD\$USER_PASSWD" | (passwd $CREA_USER)
 
 #Création de l'environnement
 echo "     |  - CREATION ENVIRONNEMENT DOSSIER" 
-mkdir -p "$DIR_HOME" "$DIR_HOME_PROJECT" "$DIR_MAIL" && chown "$CREA_USER":"$CREA_GROUP" "$DIR_HOME" "$DIR_HOME_PROJECT" "$DIR_MAIL"
+mkdir -p "$DIR_HOME" "$DIR_HOME_PROJECT"  && chown "$CREA_USER":"$CREA_GROUP" "$DIR_HOME" "$DIR_HOME_PROJECT" 
 
 echo "     |  - CREATION ENVIRONNEMENT FICHIER" 
 #Création du fichier de bienvenue
 touch "$DIR_HOME/Bienvenue_$CREA_USER" && chown "$CREA_USER":"$CREA_GROUP" "$DIR_HOME/Bienvenue_$CREA_USER"
 
+#Création du fichier mail
+echo "     |         | - CREATION FICHIER VIMRC" 
+touch "$DIR_MAIL/$CREA_USER" && chown "$CREA_USER":"$CREA_GROUP" "$DIR_HOME/$CREA_USER"
 #Création du fichier .vimrc
 echo "     |         | - CREATION FICHIER VIMRC" 
 getTplFic ".vimrc" "$CREA_USER" "$CREA_GROUP" "$DIR_HOME" "$DIR_TPL"
