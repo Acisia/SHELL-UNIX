@@ -1,0 +1,74 @@
+#!/bin/sh
+###################################################################################################################
+# Author : Louis DAUBIGNARD
+# Date   : 11/04/2014
+# 
+# Description : Liste des variables utilisées
+#
+# Ce fichier est à placer dans config/config.sh
+#
+###################################################################################################################
+
+############# Date du jour
+#DATE POUR BACKUP
+DATEJ=`date +%Y-%m-%d_%H-%M`
+#DATE AFFICHAGE DANS LES FICHIERS DE LOG
+DATELOG=`date +%d-%m-%Y_%H:%M:%S`
+#DATE POUR FTP
+NOW="$(date +"%d-%m-%Y")"
+HIER=$(date +%d-%m-%Y --date "1 days ago")
+#DATE POUR DOSSIER LIVRABLE
+DATEDOSLIV=`date +%Y-%m-%d_%H-%M-%S`
+#DATE POUR LOG
+#DATEFILOG=`date +%Y-%m-%d_%H-%M`
+DATEFILOG=`date +%Y-%m-%d`
+#nbre de jour de backup a conserver
+j=5
+j_a_delete=$(date +%d-%m-%Y --date "$j days ago")
+
+###################################################################################################################
+#
+# BASE DE DONNEES
+#
+###################################################################################################################
+############# BDD ORACLE
+#Configuration de pass bdd 
+#$bdd_login/$bdd_motdepass@$bdd_host:$bdd_port/$bdd_name
+bdd_host="xxxxxx"
+bdd_login="xxxxxx"
+bdd_motdepass="xxxxxx"
+bdd_name="xxxxxx"
+bdd_port="1521"
+
+############# BDD MYSQL
+#Configuration de pass bdd
+bdd_m_host="localhost"
+bdd_m_login="xxxxxx"
+bdd_m_motdepass="xxxxxx"
+bdd_m_name="xxxxxx"
+
+###################################################################################################################
+#
+# CHEMIN
+#
+###################################################################################################################
+############# CHEMIN
+#Configuration du chemin des scripts
+
+###################################################################################################################
+#
+# LOG
+#
+###################################################################################################################
+############# FICHIER DE LOG
+FICLOGNAMEINST=$DATEFILOG"-INST.log"
+FICLOGNAME="$DATEFILOG.log"
+
+###################################################################################################################
+#
+# EMAIL
+#
+###################################################################################################################
+############# EMAIL
+#Configuration de l adresse email de destination
+mail_adr="XXX@XXXX.fr"
