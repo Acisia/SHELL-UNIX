@@ -9,9 +9,9 @@
 #
 ###################################################################################################################
 #PARAMETRES A MODIFIER
-USER_NOM=DAUBIGNARD
-USER_PRENOM=Louis
-USER_ADRESSEMAIL=louis.daubignard@kertios.com
+USER_NOM=""
+USER_PRENOM=""
+USER_ADRESSEMAIL=""
 USER_NUM_BUREAU=""
 USER_TEL_PRO=""
 USER_TEL_PERSO=""
