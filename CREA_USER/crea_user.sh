@@ -88,8 +88,8 @@ echo "     |  - CREATION ENVIRONNEMENT FICHIER"
 touch "$DIR_HOME/Bienvenue_$CREA_USER" && chown "$CREA_USER":"$CREA_GROUP" "$DIR_HOME/Bienvenue_$CREA_USER"
 
 #Création du fichier mail
-echo "     |         | - CREATION FICHIER VIMRC" 
-touch "$DIR_MAIL/$CREA_USER" && chown "$CREA_USER":"$CREA_GROUP" "$DIR_HOME/$CREA_USER"
+echo "     |         | - CREATION FICHIER MAIL" 
+touch "$DIR_MAIL/$CREA_USER" && chown "$CREA_USER":"$CREA_GROUP" "$DIR_MAIL/$CREA_USER"
 #Création du fichier .vimrc
 echo "     |         | - CREATION FICHIER VIMRC" 
 getTplFic ".vimrc" "$CREA_USER" "$CREA_GROUP" "$DIR_HOME" "$DIR_TPL"
