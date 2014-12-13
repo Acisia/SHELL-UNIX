@@ -70,13 +70,14 @@ fi
 echo "     |  - AJOUT USER $CREA_USER" 
 if ! id $CREA_USER > /dev/null 2>&1 ; then
 adduser --system --home $DIR_HOME \
---ingroup "$CREA_GROUP" --disabled-password --shell /bin/false \
+--ingroup "$CREA_GROUP" \
+--gecos "$USER_NOM_COMPLET,$USER_NUM_BUREAU,$USER_TEL_PRO,$USER_TEL_PERSO,$USER_AUTRE" --disabled-password --shell \
 "$CREA_USER"
 fi
 
 #Ajout du mot de passe
 USER_PASSWD=`getPasswd`
-echo -e "$USER_PASSWD\$USER_PASSWD" | (passwd $CREA_USER)
+echo "$CREA_USER:$USER_PASSWD" | sudo chpasswd
 
 #Création de l'environnement
 echo "     |  - CREATION ENVIRONNEMENT DOSSIER" 
