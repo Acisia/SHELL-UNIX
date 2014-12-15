@@ -29,10 +29,9 @@ echo  "-------------------------------------------------------------------------
 ##################################################################################################################
 # TEST PRE-REQUIS
 # Vérifier que l'utilisateur est root
-if [[ $EUID -ne 0 ]]; then
-   echo "Ce script doit être lancé en root"
-   exit 1
-fi
+checkUserRoot
+# Vérifier que perl est installé pour la gestion des mots de passe
+checkAppli perl
 ##################################################################################################################
 # MISE EN PLACE DES VARIABLES
 USER_NOM_COMPLET="$USER_PRENOM $USER_NOM"
@@ -45,6 +44,7 @@ DIR_MAIL=/var/mail
 DIR_HOME_PROJECT=/home/$USER_LOGIN/projects
 DIR_TPL=$PATHROOT/tpl
 # Affichage des parametres
+echo "     | ---------------------------------------------" 
 echo "     |  - Nom : $USER_NOM"
 echo "     |  - Prénom : $USER_PRENOM"
 echo "     |  - Nom Complet : $USER_NOM_COMPLET"
@@ -66,18 +66,22 @@ if ! getent group "$CREA_GROUP" > /dev/null 2>&1 ; then
 	addgroup --system "$CREA_GROUP" --quiet
 fi
 
+#Génération du mot de passe
+USER_PASSWD=`getPasswd`
+
 #Ajout de l utilisateur
 echo "     |  - AJOUT USER $CREA_USER" 
-if ! id $CREA_USER > /dev/null 2>&1 ; then
-adduser --system --home $DIR_HOME \
---ingroup "$CREA_GROUP" \
---gecos "$USER_NOM_COMPLET,$USER_NUM_BUREAU,$USER_TEL_PRO,$USER_TEL_PERSO,$USER_AUTRE" --disabled-password --shell \
-"$CREA_USER"
-fi
+egrep "^$CREA_USER" /etc/passwd >/dev/null
+	if [ $? -eq 0 ]; then
+		echo  -e "\033[31m[ERREUR]\033[0m $CREA_USER exists!"
+		exit 1
+	else
+		pass=$(perl -e 'print crypt($ARGV[0], "password")' $password)
+		useradd -m -p $USER_PASSWD $CREA_USER -g $CREA_GROUP
+		useradd -m -p $USER_PASSWD $CREA_USER -g $CREA_GROUP -c "$USER_NOM_COMPLET,$USER_NUM_BUREAU,$USER_TEL_PRO,$USER_TEL_PERSO,$USER_AUTRE"
+		[ $? -eq 0 ] && echo -e "\033[32m[USER-ADD]\033[0m $CREA_USER a été ajouté au system!" || echo -e "\033[31m[ERREUR]\033[0m Impossible d'ajouter l'utilisateur $CREA_USER!"
+	fi
 
-#Ajout du mot de passe
-USER_PASSWD=`getPasswd`
-echo "$CREA_USER:$USER_PASSWD" | sudo chpasswd
 
 #Création de l'environnement
 echo "     |  - CREATION ENVIRONNEMENT DOSSIER" 
