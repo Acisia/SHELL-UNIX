@@ -3,9 +3,9 @@
 # Author : Louis DAUBIGNARD
 # Date   : 31/07/2012
 # 
-# Description : Liste des fonctions utilisés dans les scripts de sauvegarde
+# Description : Liste des fonctions utilisÃ©s dans les scripts de sauvegarde
 #
-# Ce fichier est à placer dans ../lib/function.sh
+# Ce fichier est Ã  placer dans ../lib/function.sh
 #
 ###################################################################################################################
 #
@@ -36,7 +36,7 @@ echo "$1"	>> "$PAHTDESTLOG"
 # COMPTAGE
 #
 ###################################################################################################################
-# Compte le nombre d'occurence d'un caractère
+# Compte le nombre d'occurence d'un caractÃ¨re
 # getNbCara $TEXT $CARA
 getNbCara(){
 	#!/bin/bash
@@ -89,14 +89,14 @@ getNbFicInDir(){
 # GESTION UTILISATEUR
 #
 ###################################################################################################################
-#Retourne le login à partir du nom et du prénom
+#Retourne le login Ã  partir du nom et du prÃ©nom
 # getLoginName $NOM $PRENOM
 getLoginName(){
 	NOM=$1
 	PRENOM=$2
 	#Traitement sans accent et sans espace tout en undescore
-	NOM=$(echo "$NOM" | tr "àçéèêëîïôöùüÂÇÉÈÊËÎÏÔÖÙÜ -" "aceeeeiioouuACEEEEIIOOUU__")
-	PRENOM=$(echo "$PRENOM" | tr "àçéèêëîïôöùüÂÇÉÈÊËÎÏÔÖÙÜ -" "aceeeeiioouuACEEEEIIOOUU__")
+	NOM=$(echo "$NOM" | tr "Ã Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã¼Ã‚Ã‡Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ãœ -" "aceeeeiioouuACEEEEIIOOUU__")
+	PRENOM=$(echo "$PRENOM" | tr "Ã Ã§Ã©Ã¨ÃªÃ«Ã®Ã¯Ã´Ã¶Ã¹Ã¼Ã‚Ã‡Ã‰ÃˆÃŠÃ‹ÃŽÃÃ”Ã–Ã™Ãœ -" "aceeeeiioouuACEEEEIIOOUU__")
 	# On compte les UNDERSCORE	
 	NB_SPC_NOM=`getNbCara $NOM "_"`
 	NB_SPC_PRENOM=`getNbCara $PRENOM "_"`
@@ -139,7 +139,7 @@ getTplFic(){
 	fi
 }
 
-# génération de mot de passe alléatoire
+# gÃ©nÃ©ration de mot de passe allÃ©atoire
 getPasswd() {
 	local l=$1
        	[ "$l" == "" ] && l=16
@@ -247,6 +247,32 @@ checkPathBackupFile(){
 	fi
 }
 
+# Test si une application est installÃ©
+# checkAppli $APPLICATION
+checkAppli(){
+	if [ "$1" ]
+	then
+		command -v $1 >/dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			echo -e "\033[32m[CTRL-DROIT]\033[0m $1 : \033[32mOK\033[0m"
+		else			
+			echo -e "\033[31m[ERREUR]\033[0m $1 : \033[31mKO\033[0m"
+			exit 1
+		fi
+	fi	
+}
+
+# Test de la prÃ©sence des droits root
+# checkUserRoot
+checkUserRoot(){
+	# VÃ©rifier que l'utilisateur est root
+	if [[ $EUID -ne 0 ]]; then
+	   echo -e "\033[31m[ERREUR]\033[0m Ce script doit Ãªtre lancÃ© en root"	   
+	   exit 1
+	else	
+	   echo -e "\033[32m[CTRL-DROIT]\033[0m USER : ROOT : \033[32mOK\033[0m"
+	fi
+}
 ###################################################################################################################
 #
 # GESTION DOSSIER FICHIER
@@ -294,7 +320,7 @@ getStatFile(){
 	echo "$DATELOG - Nb de colonne : $fic_NB_TOTAL_COL" >> "$PAHTDESTLOG"	
 	
 }
-# fonction suppression de fichier s'il est présent seulement
+# fonction suppression de fichier s'il est prÃ©sent seulement
 # deleteFile [chemin de destination] [nom du fichier]
 deleteFile(){
 	CHEMINDST="$1"
