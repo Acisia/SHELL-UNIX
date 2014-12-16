@@ -254,7 +254,7 @@ checkAppli(){
 	then
 		command -v $1 >/dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			echo -e "\033[32m[CTRL-DROIT]\033[0m $1 : \033[32mOK\033[0m"
+			echo -e "\033[32m[CTRL-APPLI]\033[0m $1 : \033[32mOK\033[0m"
 		else			
 			echo -e "\033[31m[ERREUR]\033[0m $1 : \033[31mKO\033[0m"
 			exit 1
