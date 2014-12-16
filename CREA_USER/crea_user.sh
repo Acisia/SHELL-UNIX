@@ -61,25 +61,38 @@ echo "     | ---------------------------------------------"
 cd ~
 
 #Ajout du groupe utilisateur
-echo "     |  - AJOUT GROUP $CREA_GROUP" 
-if ! getent group "$CREA_GROUP" > /dev/null 2>&1 ; then
-	addgroup --system "$CREA_GROUP" --quiet
-fi
+#echo "     |  - AJOUT GROUP $CREA_GROUP" 
+#if ! getent group "$CREA_GROUP" > /dev/null 2>&1 ; then
+#	addgroup --system "$CREA_GROUP" --quiet
+#fi
 
 #Génération du mot de passe
 USER_PASSWD=`getPasswd`
 
 #Ajout de l utilisateur
-echo "     |  - AJOUT USER $CREA_USER" 
+	###########################################################
+	# useradd 	[-c commentaire] [-d rép_perso]
+    # 			[-e date_expiration] [-f temps_inactivité]
+    # 			[-g groupe_initial] [-G groupe[,...]]
+    # 			[-m [-k rép_squelette] | -M] [-p mot_de_passe crypté]
+    # 			[-s shell] [-u uid [ -o]] [-n] [-r] login 
+	# useradd	 -D [-g groupe_défaut] [-b rép_perso_défaut]
+    # 			[-f inactivité] [-e date_expiration_défaut]
+    # 			[-s shell_défaut] 
+	###########################################################
+
 egrep "^$CREA_USER" /etc/passwd >/dev/null
 	if [ $? -eq 0 ]; then
-		echo  -e "\033[31m[ERREUR]\033[0m $CREA_USER exists!"
+		echo "[ERREUR] $CREA_USER exists!"
 		exit 1
 	else
-		pass=$(perl -e 'print crypt($ARGV[0], "password")' $password)
-		useradd -m -p $USER_PASSWD $CREA_USER -g $CREA_GROUP
-		useradd -m -p $USER_PASSWD $CREA_USER -g $CREA_GROUP -c "$USER_NOM_COMPLET,$USER_NUM_BUREAU,$USER_TEL_PRO,$USER_TEL_PERSO,$USER_AUTRE"
-		[ $? -eq 0 ] && echo -e "\033[32m[USER-ADD]\033[0m $CREA_USER a été ajouté au system!" || echo -e "\033[31m[ERREUR]\033[0m Impossible d'ajouter l'utilisateur $CREA_USER!"
+		useradd -m -p $(openssl passwd -1 $USER_PASSWD)  -s /bin/bash -c "$USER_NOM_COMPLET,$USER_NUM_BUREAU,$USER_TEL_PRO,$USER_TEL_PERSO,$USER_AUTRE" -U $CREA_USER
+		if [ $? -eq 0 ]; then
+			echo -e "\033[32m[USER-ADD]\033[0m $CREA_USER a été ajouté au system!"
+		else 
+			echo -e "\033[31m[ERREUR]\033[0m Impossible d'ajouter l'utilisateur $CREA_USER!"
+			exit 1
+		fi
 	fi
 
 
