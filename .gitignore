@@ -24,6 +24,12 @@ SHELL-UNIX/config/config.dist
 # fichier de param
 SHELL-UNIX/CREA_USER/user_param.sh
 
+#################
+## Fichier de log
+#################
+*.log
+SHELL-UNIX/LOG/LOG/
+
 #############
 ## Windows detritus
 #############
