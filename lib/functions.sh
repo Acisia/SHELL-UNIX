@@ -12,25 +12,46 @@
 # AFFICHAGE CONSOLE ET LOG
 #
 ###################################################################################################################
-# printmessageToUser $MESSAGE
-printmessageToUser( ){
+# printMessageToUser $MESSAGE
+printMessageToUser(){
+MESSAGE=$1
+echo "$MESSAGE"
+}
+# printFormatMessageToUser $MESSAGE
+printFormatMessageToUser(){
 MESSAGE=$1
 echo " |"
 echo " |---> $MESSAGE"
 echo " |"
 }
-#printmessageToLogAndUser $MESSAGE
-printmessageToLogAndUser( ){
+#printMessageToLog $MESSAGE
+printMessageToLog(){
 MESSAGE=$1
-echo "$1"
-echo "$1"	>> "$PAHTDESTLOG"
+echo "$MESSAGE"				>> "$PAHTDESTLOG"
 }
-#printmessageToLog $MESSAGE
-printmessageToLog( ){
+# printFormatMessageToLog $MESSAGE
+printFormatMessageToLog(){
 MESSAGE=$1
-echo "$1"	>> "$PAHTDESTLOG"
+echo " |"					>> "$PAHTDESTLOG"
+echo " |---> $MESSAGE"		>> "$PAHTDESTLOG"
+echo " |"					>> "$PAHTDESTLOG"
 }
-
+#printMessageToLogAndUser $MESSAGE
+printMessageToLogAndUser(){
+MESSAGE=$1
+echo "$MESSAGE"
+echo "$MESSAGE"				>> "$PAHTDESTLOG"
+}
+# printFormatMessageToLogAndUser $MESSAGE
+printFormatMessageToLogAndUser(){
+MESSAGE=$1
+echo " |"
+echo " |---> $MESSAGE"
+echo " |"
+echo " |"					>> "$PAHTDESTLOG"
+echo " |---> $MESSAGE"		>> "$PAHTDESTLOG"
+echo " |"					>> "$PAHTDESTLOG"
+}
 ###################################################################################################################
 #
 # COMPTAGE
