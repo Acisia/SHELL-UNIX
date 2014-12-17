@@ -8,7 +8,7 @@ Script Shell sous Linux pour informer :
  
 Lancement du script :
  ```shell
- ./printMassage.sh
+ ./printMessage.sh
 ```
 # Pré-requis
 La librairie des fonctions est requise
