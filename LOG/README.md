@@ -44,23 +44,23 @@ printFormatMessageToUser "Message à afficher"
 ### J'affiche uniquement dans le fichier de log $PAHTDESTLOG
 Syntaxe  :
 ```shell
-printMessageToLog "Message à afficher"
+printMessageToLog "Message à afficher" "$PAHTDESTLOG"
 ```
 
 ### J'affiche avec un style de formattage uniquement dans le fichier de log  $PAHTDESTLOG
 Syntaxe  :
 ```shell
-printFormatMessageToLog "Message à afficher"
+printFormatMessageToLog "Message à afficher" "$PAHTDESTLOG"
 ```
 
 ### J'affiche à l'écran et dans le fichier de log $PAHTDESTLOG
 Syntaxe  :
 ```shell
-printMessageToLogAndUser "Message à afficher"
+printMessageToLogAndUser "Message à afficher" "$PAHTDESTLOG"
 ```
 
 ### J'affiche avec un style de formattage à l'écran et dans le fichier de log  $PAHTDESTLOG
 Syntaxe  :
-```shell
-printFormatMessageToLogAndUser "Message à afficher"
+```shell 
+printFormatMessageToLogAndUser "Message à afficher" "$PAHTDESTLOG"
 ```

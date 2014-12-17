@@ -27,11 +27,13 @@ echo " |"
 #printMessageToLog $MESSAGE
 printMessageToLog(){
 MESSAGE=$1
+PAHTDESTLOG=$2
 echo "$MESSAGE"				>> "$PAHTDESTLOG"
 }
 # printFormatMessageToLog $MESSAGE
 printFormatMessageToLog(){
 MESSAGE=$1
+PAHTDESTLOG=$2
 echo " |"					>> "$PAHTDESTLOG"
 echo " |---> $MESSAGE"		>> "$PAHTDESTLOG"
 echo " |"					>> "$PAHTDESTLOG"
@@ -39,12 +41,14 @@ echo " |"					>> "$PAHTDESTLOG"
 #printMessageToLogAndUser $MESSAGE
 printMessageToLogAndUser(){
 MESSAGE=$1
+PAHTDESTLOG=$2
 echo "$MESSAGE"
 echo "$MESSAGE"				>> "$PAHTDESTLOG"
 }
 # printFormatMessageToLogAndUser $MESSAGE
 printFormatMessageToLogAndUser(){
 MESSAGE=$1
+PAHTDESTLOG=$2
 echo " |"
 echo " |---> $MESSAGE"
 echo " |"
