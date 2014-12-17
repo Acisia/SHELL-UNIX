@@ -12,10 +12,11 @@
 #CHEMIN RACINE
 PATHROOT="$PWD"
 
-#RECUPERATION DES FONCTIONS
-. $PATHROOT/../lib/functions.sh
 #RECUPERATION DES PROPERTIES
 . $PATHROOT/../config/config.sh
+#RECUPERATION DES FONCTIONS
+. $PATHROOT/../lib/functions.sh
+
 ##################################################################################################################
 echo  "--------------------------------------------------------------------------------------------------"
 echo  "                   TEST AFFICHAGE LOG		   													 "
