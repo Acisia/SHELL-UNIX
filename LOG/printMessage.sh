@@ -18,18 +18,23 @@ PATHROOT="$PWD"
 . $PATHROOT/../lib/functions.sh
 
 ##################################################################################################################
+# nettoyage
+clear
 echo  "--------------------------------------------------------------------------------------------------"
-echo  "                   TEST AFFICHAGE LOG		   													 "
+echo  "                   TEST AFFICHAGE LOG                                                                                                                     "
 echo  "--------------------------------------------------------------------------------------------------"
+# initialisation du fichier de log
+checkLog $PATHDEST_REPLOG $FICLOGNAME
+echo  "----------------------------------"
 
 printMessageToUser "J'affiche uniquement sur l'écran"
 
 printFormatMessageToUser "J'affiche avec un style de formattage uniquement sur l'écran"
 
-printMessageToLog "J'affiche uniquement dans le fichier de log $PAHTDESTLOG" "$PAHTDESTLOG"
+printMessageToLog "J'affiche uniquement dans le fichier de log $FICLOGNAME" "$PATHDEST_FICLOG"
 
-printFormatMessageToLog "J'affiche avec un style de formattage uniquement dans le fichier de log  $PAHTDESTLOG" "$PAHTDESTLOG"
+printFormatMessageToLog "J'affiche avec un style de formattage uniquement dans le fichier de log  $FICLOGNAME" "$PATHDEST_FICLOG"
 
-printMessageToLogAndUser "J'affiche à l'écran et dans le fichier de log $PAHTDESTLOG" "$PAHTDESTLOG"
+printMessageToLogAndUser "J'affiche à l'écran et dans le fichier de log $FICLOGNAME" "$PATHDEST_FICLOG"
 
-printFormatMessageToLogAndUser "J'affiche avec un style de formattage à l'écran et dans le fichier de log  $PAHTDESTLOG" "$PAHTDESTLOG"
+printFormatMessageToLogAndUser "J'affiche avec un style de formattage à l'écran et dans le fichier de log  $FICLOGNAME" "$PATHDEST_FICLOG"

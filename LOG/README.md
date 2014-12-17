@@ -23,7 +23,7 @@ Le fichier de config est requis
  #RECUPERATION DES PROPERTIES
  . $PATHROOT/../config/config.sh
 ```
-Il contient la définition de `$PAHTDESTLOG` (nom et chemin de fichier de log)
+Il contient la définition de `$PATHDEST_FICLOG` (nom et chemin de fichier de log)
 
  
 
@@ -41,26 +41,26 @@ Syntaxe  :
 printFormatMessageToUser "Message à afficher"
 ```
 
-### J'affiche uniquement dans le fichier de log $PAHTDESTLOG
+### J'affiche uniquement dans le fichier de log $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
-printMessageToLog "Message à afficher" "$PAHTDESTLOG"
+printMessageToLog "Message à afficher" "$PATHDEST_FICLOG"
 ```
 
-### J'affiche avec un style de formattage uniquement dans le fichier de log  $PAHTDESTLOG
+### J'affiche avec un style de formattage uniquement dans le fichier de log  $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
-printFormatMessageToLog "Message à afficher" "$PAHTDESTLOG"
+printFormatMessageToLog "Message à afficher" "$PATHDEST_FICLOG"
 ```
 
-### J'affiche à l'écran et dans le fichier de log $PAHTDESTLOG
+### J'affiche à l'écran et dans le fichier de log $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
-printMessageToLogAndUser "Message à afficher" "$PAHTDESTLOG"
+printMessageToLogAndUser "Message à afficher" "$PATHDEST_FICLOG"
 ```
 
-### J'affiche avec un style de formattage à l'écran et dans le fichier de log  $PAHTDESTLOG
+### J'affiche avec un style de formattage à l'écran et dans le fichier de log  $PATHDEST_FICLOG
 Syntaxe  :
 ```shell 
-printFormatMessageToLogAndUser "Message à afficher" "$PAHTDESTLOG"
+printFormatMessageToLogAndUser "Message à afficher" "$PATHDEST_FICLOG"
 ```

@@ -12,49 +12,77 @@
 # AFFICHAGE CONSOLE ET LOG
 #
 ###################################################################################################################
+# checkLog $PATHDEST_FICLOG
+checkLog(){
+	PAHTDEST_REPLOG=$1
+	FICLOGNAME=$2
+	PATHDEST_FICLOG="$PAHTDEST_REPLOG/$FICLOGNAME"
+		# Vérification du dossier de log
+		if [ ! -e "$PAHTDEST_REPLOG" ]
+		then		
+			mkdir "$PAHTDEST_REPLOG"
+			chmod -R 755 "$PAHTDEST_REPLOG"
+			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
+		else			
+			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
+		fi
+		# Vérification du fichier de log
+		if [ ! -f "$PATHDEST_FICLOG" ]
+		then		
+			touch $PATHDEST_FICLOG			
+			chmod -R 755 "$PATHDEST_FICLOG"
+			TAILLE=`du -hs $PATHDEST_FICLOG`
+			echo -e "\033[32m[CTRL-LOG]\033[0m FICHIER $FICLOGNAME : \033[32mOK\033[0m -> $TAILLE"
+		else
+			chmod -R 755 "$PATHDEST_FICLOG"
+			TAILLE=`du -hs $PATHDEST_FICLOG`
+			echo -e "\033[32m[CTRL-LOG]\033[0m FICHIER $FICLOGNAME : \033[32mOK\033[0m -> $TAILLE"
+		fi
+}
+
 # printMessageToUser $MESSAGE
 printMessageToUser(){
-MESSAGE=$1
-echo "$MESSAGE"
+	MESSAGE=$1
+	echo "$MESSAGE"
 }
 # printFormatMessageToUser $MESSAGE
 printFormatMessageToUser(){
-MESSAGE=$1
-echo " |"
-echo " |---> $MESSAGE"
-echo " |"
+	MESSAGE=$1
+	echo " |"
+	echo " |---> $MESSAGE"
+	echo " |"
 }
 #printMessageToLog $MESSAGE
 printMessageToLog(){
-MESSAGE=$1
-PAHTDESTLOG=$2
-echo "$MESSAGE"				>> "$PAHTDESTLOG"
+	MESSAGE=$1
+	PATHDEST_FICLOG=$2
+	echo "$MESSAGE"				>> "$PATHDEST_FICLOG"
 }
 # printFormatMessageToLog $MESSAGE
 printFormatMessageToLog(){
-MESSAGE=$1
-PAHTDESTLOG=$2
-echo " |"					>> "$PAHTDESTLOG"
-echo " |---> $MESSAGE"		>> "$PAHTDESTLOG"
-echo " |"					>> "$PAHTDESTLOG"
+	MESSAGE=$1
+	PATHDEST_FICLOG=$2
+	echo " |"					>> "$PATHDEST_FICLOG"
+	echo " |---> $MESSAGE"		>> "$PATHDEST_FICLOG"
+	echo " |"					>> "$PATHDEST_FICLOG"
 }
 #printMessageToLogAndUser $MESSAGE
 printMessageToLogAndUser(){
-MESSAGE=$1
-PAHTDESTLOG=$2
-echo "$MESSAGE"
-echo "$MESSAGE"				>> "$PAHTDESTLOG"
+	MESSAGE=$1
+	PATHDEST_FICLOG=$2
+	echo "$MESSAGE"
+	echo "$MESSAGE"				>> "$PATHDEST_FICLOG"
 }
 # printFormatMessageToLogAndUser $MESSAGE
 printFormatMessageToLogAndUser(){
-MESSAGE=$1
-PAHTDESTLOG=$2
-echo " |"
-echo " |---> $MESSAGE"
-echo " |"
-echo " |"					>> "$PAHTDESTLOG"
-echo " |---> $MESSAGE"		>> "$PAHTDESTLOG"
-echo " |"					>> "$PAHTDESTLOG"
+	MESSAGE=$1
+	PATHDEST_FICLOG=$2
+	echo " |"
+	echo " |---> $MESSAGE"
+	echo " |"
+	echo " |"					>> "$PATHDEST_FICLOG"
+	echo " |---> $MESSAGE"		>> "$PATHDEST_FICLOG"
+	echo " |"					>> "$PATHDEST_FICLOG"
 }
 ###################################################################################################################
 #
@@ -73,7 +101,7 @@ getNbCara(){
 # fonction affichant le nombre de fichier dans un dossier
 getNbFicInDir(){
 	CHEMINDOSSIER=$1
-	PAHTDESTLOG=$2
+	PATHDEST_FICLOG=$2
 	EXTENSION=$3
 	SILENCEMODE=$4
 	if [ ! -e "$CHEMINDOSSIER" ]
@@ -81,7 +109,7 @@ getNbFicInDir(){
 		if [ ! "$SILENCEMODE" ]
 			then
 			printmessageToUser "[ERROR][DIRECTORY] $CHEMINDOSSIER : KO"
-			printmessageToUser "[ERROR][DIRECTORY] $CHEMINDOSSIER : KO" >>  "$PAHTDESTLOG"
+			printmessageToUser "[ERROR][DIRECTORY] $CHEMINDOSSIER : KO" >>  "$PATHDEST_FICLOG"
 		else	
 			echo 0
 		fi		
@@ -91,7 +119,7 @@ getNbFicInDir(){
 		if [ ! "$SILENCEMODE" ]
 			then
 			printmessageToUser "Nombre de fichier $EXTENSION : $NB_FILE"
-			printmessageToUser "Nombre de fichier $EXTENSION : $NB_FILE" >>  "$PAHTDESTLOG"
+			printmessageToUser "Nombre de fichier $EXTENSION : $NB_FILE" >>  "$PATHDEST_FICLOG"
 		else	
 			echo $NB_FILE
 		fi
@@ -101,7 +129,7 @@ getNbFicInDir(){
 		if [ ! "$SILENCEMODE" ]
 			then
 			printmessageToUser "Nombre de fichier : $NB_FILE"
-			printmessageToUser "Nombre de fichier : $NB_FILE" >>  "$PAHTDESTLOG"
+			printmessageToUser "Nombre de fichier : $NB_FILE" >>  "$PATHDEST_FICLOG"
 		else
 			echo $NB_FILE
 		fi
@@ -304,10 +332,10 @@ checkUserRoot(){
 #
 ###################################################################################################################
 # Fonction statistique du fichier
-# statFile [FILESRC] [PAHTDESTLOG] [SEPARATEUR]
+# statFile [FILESRC] [PATHDEST_FICLOG] [SEPARATEUR]
 getStatFile(){
 	FILESRC=$1
-	PAHTDESTLOG=$2
+	PATHDEST_FICLOG=$2
 	FILENAME=$(basename $1)
 	if [ $3 ]
 		then
@@ -335,14 +363,14 @@ getStatFile(){
 	printmessageToUser "Nb de colonne : $fic_NB_TOTAL_COL"	
 	printmessageToUser "SEPARATEUR:----->$SEPARATEUR<-------"	
 	#[LOG] Ecriture dans fichier de log
-	echo "$DATELOG ---------------------------" >> "$PAHTDESTLOG"
-	echo "$DATELOG   STATISTIQUE FICHIER	  " >> "$PAHTDESTLOG"
-	echo "$DATELOG ---------------------------" >> "$PAHTDESTLOG"
-	echo "$DATELOG - Nom du fichier : $FILENAME" >> "$PAHTDESTLOG"
-	echo "$DATELOG - Chemin du fichier : $FILESRC" >> "$PAHTDESTLOG"
-	echo "$DATELOG - Taille du fichier : $fic_TAILLE" >> "$PAHTDESTLOG"
-	echo "$DATELOG - Total ligne : $fic_NB_TOTAL_LIGNE"	 >> "$PAHTDESTLOG"
-	echo "$DATELOG - Nb de colonne : $fic_NB_TOTAL_COL" >> "$PAHTDESTLOG"	
+	echo "$DATELOG ---------------------------" >> "$PATHDEST_FICLOG"
+	echo "$DATELOG   STATISTIQUE FICHIER	  " >> "$PATHDEST_FICLOG"
+	echo "$DATELOG ---------------------------" >> "$PATHDEST_FICLOG"
+	echo "$DATELOG - Nom du fichier : $FILENAME" >> "$PATHDEST_FICLOG"
+	echo "$DATELOG - Chemin du fichier : $FILESRC" >> "$PATHDEST_FICLOG"
+	echo "$DATELOG - Taille du fichier : $fic_TAILLE" >> "$PATHDEST_FICLOG"
+	echo "$DATELOG - Total ligne : $fic_NB_TOTAL_LIGNE"	 >> "$PATHDEST_FICLOG"
+	echo "$DATELOG - Nb de colonne : $fic_NB_TOTAL_COL" >> "$PATHDEST_FICLOG"	
 	
 }
 # fonction suppression de fichier s'il est présent seulement
