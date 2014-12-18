@@ -40,6 +40,52 @@ checkLog(){
 		fi
 }
 
+# printMessageTo  $MESSAGE  $FORMATTAGE $DESTINATION $PATHDEST_FICLOG
+printMessageTo(){
+	MESSAGE=$1 
+	FORMATTAGE=$2  # (0=sans, 1=titre, 2=mise en avant)
+	DESTINATION=$3 # (0=console, 1=fichier, 2=console et fichier)
+	PATHDEST_FICLOG=$4
+	MSG_ERREUR="[ERREUR] Manque paramètre Syntaxe : (printMessageTo  MESSAGE  FORMATTAGE DESTINATION PATHDEST_FICLOG)"
+	
+	if [! $MESSAGE ]; then
+		echo $MSG_ERREUR
+	fi
+
+	if [ $FORMATTAGE ]; then
+		# TEST 0=Pas de formattage
+		if [ $FORMATTAGE -eq 0 ]; then
+			MESSAGE=$MESSAGE
+		# TEST 1=titre
+		elif [ $FORMATTAGE -eq 1 ]; then
+			MESSAGE="\033[45m------------------------------------\n\t\t$MESSAGE\n------------------------------------\033[0m"
+		# TEST 2=mise en avant
+		elif [ $FORMATTAGE -eq 2 ]; then
+			MESSAGE="\t\t|\n\t\t|-- $MESSAGE\n\t\t|"
+		fi
+	else
+		#PAR DEFAUT : Pas de formattage
+		MESSAGE="$MESSAGE"	
+	fi
+	#traitement de la destination 
+	if [ $DESTINATION ]; then
+		# TEST 0=console
+		if [ $DESTINATION -eq 0 ]; then
+			echo "$MESSAGE"
+		# TEST 1=fichier
+		elif [ $DESTINATION -eq 1 ]; then
+			echo "$MESSAGE" >> "$PATHDEST_FICLOG"
+		# TEST 2=fichier et console
+		elif [ $DESTINATION -eq 2 ]; then
+			echo "$MESSAGE"
+			echo "$MESSAGE" >> "$PATHDEST_FICLOG"
+		fi
+	else
+		#PAR DEFAUT : Sortie console
+		echo "$MESSAGE"
+	fi
+}
+
 # printMessageToUser $MESSAGE
 printMessageToUser(){
 	MESSAGE=$1
