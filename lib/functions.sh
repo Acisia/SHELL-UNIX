@@ -64,9 +64,6 @@ printMessageTo(){
 		elif [ $FORMATTAGE -eq 2 ]; then
 			MESSAGE="\t\t\033[33m|\033[0m\n\t\t\033[33m|--\033[0m $MESSAGE\n\t\t\033[33m|\033[0m"
 		fi
-	else
-		#PAR DEFAUT : Pas de formattage
-		MESSAGE="$MESSAGE"	
 	fi
 	#traitement de la destination 
 	if [ $DESTINATION ]; then
