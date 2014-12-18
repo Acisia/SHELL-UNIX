@@ -20,21 +20,22 @@ PATHROOT="$PWD"
 ##################################################################################################################
 # nettoyage
 clear
-echo  "--------------------------------------------------------------------------------------------------"
-echo  "                   TEST AFFICHAGE LOG                                                                                                                     "
-echo  "--------------------------------------------------------------------------------------------------"
+
+printMessageTo "TEST AFFICHAGE LOG" "1" "2" "$PATHDEST_FICLOG"
 # initialisation du fichier de log
 checkLog $PATHDEST_REPLOG $FICLOGNAME
 echo  "----------------------------------"
 
-printMessageToUser "J'affiche uniquement sur l'écran"
+printMessageTo "J'affiche uniquement sur l'écran" 
 
-printFormatMessageToUser "J'affiche avec un style de formattage uniquement sur l'écran"
+printMessageTo "J'affiche avec le style de formattage 2 uniquement sur l'écran" "2"
 
-printMessageToLog "J'affiche uniquement dans le fichier de log $FICLOGNAME" "$PATHDEST_FICLOG"
+printMessageTo "J'affiche un titre uniquement sur l'écran" "1"
 
-printFormatMessageToLog "J'affiche avec un style de formattage uniquement dans le fichier de log  $FICLOGNAME" "$PATHDEST_FICLOG"
+printMessageTo "J'affiche avec un style de formattage à l'écran et dans le fichier de log  $FICLOGNAME" "2" "2" "$PATHDEST_FICLOG"
 
-printMessageToLogAndUser "J'affiche à l'écran et dans le fichier de log $FICLOGNAME" "$PATHDEST_FICLOG"
+printMessageTo "J'affiche avec un style de formattage dans le fichier de log  $FICLOGNAME" "2" "1" "$PATHDEST_FICLOG"
 
-printFormatMessageToLogAndUser "J'affiche avec un style de formattage à l'écran et dans le fichier de log  $FICLOGNAME" "$PATHDEST_FICLOG"
+printMessageTo "J'affiche avec un style de formattage à l'écran" "1" "1" "$PATHDEST_FICLOG"
+
+printMessageTo "TITRE" "1" "2" "$PATHDEST_FICLOG"

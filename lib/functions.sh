@@ -48,7 +48,8 @@ printMessageTo(){
 	PATHDEST_FICLOG=$4
 	MSG_ERREUR="\033[31m[ERREUR]\033[0m Manque paramètre Syntaxe : (printMessageTo  MESSAGE  FORMATTAGE DESTINATION PATHDEST_FICLOG)"
 	
-	if [! $MESSAGE ]; then
+	if [ ! "$MESSAGE" ] 
+	then
 		echo -e $MSG_ERREUR
 	fi
 
@@ -58,7 +59,7 @@ printMessageTo(){
 			MESSAGE=$MESSAGE
 		# TEST 1=titre
 		elif [ $FORMATTAGE -eq 1 ]; then
-			MESSAGE="\033[45m------------------------------------\n\t\t$MESSAGE\n------------------------------------\033[0m"
+			MESSAGE="\033[45m------------------------------------------------------------------------\n\t\t$MESSAGE\n------------------------------------------------------------------------\033[0m"
 		# TEST 2=mise en avant
 		elif [ $FORMATTAGE -eq 2 ]; then
 			MESSAGE="\t\t|\n\t\t|-- $MESSAGE\n\t\t|"
@@ -86,50 +87,6 @@ printMessageTo(){
 	fi
 }
 
-# printMessageToUser $MESSAGE
-printMessageToUser(){
-	MESSAGE=$1
-	echo "$MESSAGE"
-}
-# printFormatMessageToUser $MESSAGE
-printFormatMessageToUser(){
-	MESSAGE=$1
-	echo " |"
-	echo " |---> $MESSAGE"
-	echo " |"
-}
-#printMessageToLog $MESSAGE
-printMessageToLog(){
-	MESSAGE=$1
-	PATHDEST_FICLOG=$2
-	echo "$MESSAGE"				>> "$PATHDEST_FICLOG"
-}
-# printFormatMessageToLog $MESSAGE
-printFormatMessageToLog(){
-	MESSAGE=$1
-	PATHDEST_FICLOG=$2
-	echo " |"					>> "$PATHDEST_FICLOG"
-	echo " |---> $MESSAGE"		>> "$PATHDEST_FICLOG"
-	echo " |"					>> "$PATHDEST_FICLOG"
-}
-#printMessageToLogAndUser $MESSAGE
-printMessageToLogAndUser(){
-	MESSAGE=$1
-	PATHDEST_FICLOG=$2
-	echo "$MESSAGE"
-	echo "$MESSAGE"				>> "$PATHDEST_FICLOG"
-}
-# printFormatMessageToLogAndUser $MESSAGE
-printFormatMessageToLogAndUser(){
-	MESSAGE=$1
-	PATHDEST_FICLOG=$2
-	echo " |"
-	echo " |---> $MESSAGE"
-	echo " |"
-	echo " |"					>> "$PATHDEST_FICLOG"
-	echo " |---> $MESSAGE"		>> "$PATHDEST_FICLOG"
-	echo " |"					>> "$PATHDEST_FICLOG"
-}
 ###################################################################################################################
 #
 # COMPTAGE

@@ -32,35 +32,35 @@ Il contient la définition de `$PATHDEST_FICLOG` (nom et chemin de fichier de lo
 ### J'affiche uniquement sur l'écran
 Syntaxe  :
 ```shell
-printMessageToUser "Message à afficher"
+printMessageTo "Message à afficher"
 ```
 
 ### J'affiche avec un style de formattage uniquement sur l'écran
 Syntaxe  :
 ```shell
-printFormatMessageToUser "Message à afficher"
+printMessageTo "Message à afficher" "2"
 ```
 
 ### J'affiche uniquement dans le fichier de log $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
-printMessageToLog "Message à afficher" "$PATHDEST_FICLOG"
+printMessageTo "Message à afficher" "0" "1" "$PATHDEST_FICLOG"
 ```
 
 ### J'affiche avec un style de formattage uniquement dans le fichier de log  $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
-printFormatMessageToLog "Message à afficher" "$PATHDEST_FICLOG"
+printMessageTo "Message à afficher" "2" "1" "$PATHDEST_FICLOG" "$PATHDEST_FICLOG"
 ```
 
 ### J'affiche à l'écran et dans le fichier de log $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
-printMessageToLogAndUser "Message à afficher" "$PATHDEST_FICLOG"
+printMessageTo "Message à afficher" "0" "2" "$PATHDEST_FICLOG"
 ```
 
 ### J'affiche avec un style de formattage à l'écran et dans le fichier de log  $PATHDEST_FICLOG
 Syntaxe  :
 ```shell 
-printFormatMessageToLogAndUser "Message à afficher" "$PATHDEST_FICLOG"
+printMessageTo "Message à afficher" "2" "2" "$PATHDEST_FICLOG"
 ```
