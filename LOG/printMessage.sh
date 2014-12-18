@@ -26,16 +26,16 @@ printMessageTo "TEST AFFICHAGE LOG" "1" "2" "$PATHDEST_FICLOG"
 checkLog $PATHDEST_REPLOG $FICLOGNAME
 echo  "----------------------------------"
 
-printMessageTo "J'affiche uniquement sur l'écran" 
+printMessageTo "1 - J'affiche uniquement sur l'écran" 
 
-printMessageTo "J'affiche avec le style de formattage 2 uniquement sur l'écran" "2"
+printMessageTo "2 - J'affiche avec le style de formatage 2 uniquement sur l'écran" "2"
 
-printMessageTo "J'affiche un titre uniquement sur l'écran" "1"
+printMessageTo "3 - J'affiche un titre uniquement sur l'écran" "1"
 
-printMessageTo "J'affiche avec un style de formattage à l'écran et dans le fichier de log  $FICLOGNAME" "2" "2" "$PATHDEST_FICLOG"
+printMessageTo "4 - J'affiche avec un style de formatage à l'écran et dans le fichier de log  $FICLOGNAME" "2" "2" "$PATHDEST_FICLOG"
 
-printMessageTo "J'affiche avec un style de formattage dans le fichier de log  $FICLOGNAME" "2" "1" "$PATHDEST_FICLOG"
+printMessageTo "5 - J'affiche avec un style de formatage dans le fichier de log  $FICLOGNAME" "2" "1" "$PATHDEST_FICLOG"
 
-printMessageTo "J'affiche avec un style de formattage à l'écran" "1" "1" "$PATHDEST_FICLOG"
+printMessageTo "6 - J'affiche avec un style de formatage à l'écran" "1" "1" "$PATHDEST_FICLOG"
 
-printMessageTo "TITRE" "1" "2" "$PATHDEST_FICLOG"
+printMessageTo "7 - TITRE" "1" "2" "$PATHDEST_FICLOG"

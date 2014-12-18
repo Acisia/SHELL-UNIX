@@ -59,10 +59,10 @@ printMessageTo(){
 			MESSAGE=$MESSAGE
 		# TEST 1=titre
 		elif [ $FORMATTAGE -eq 1 ]; then
-			MESSAGE="\033[45m------------------------------------------------------------------------\n\t\t$MESSAGE\n------------------------------------------------------------------------\033[0m"
+			MESSAGE="\033[33m------------------------------------------------------------------------\n\t\t$MESSAGE\n------------------------------------------------------------------------\033[0m"
 		# TEST 2=mise en avant
 		elif [ $FORMATTAGE -eq 2 ]; then
-			MESSAGE="\t\t|\n\t\t|-- $MESSAGE\n\t\t|"
+			MESSAGE="\t\t\033[33m|\033[0m\n\t\t\033[33m|--\033[0m $MESSAGE\n\t\t\033[33m|\033[0m"
 		fi
 	else
 		#PAR DEFAUT : Pas de formattage
@@ -74,10 +74,10 @@ printMessageTo(){
 		if [ $DESTINATION -eq 0 ]; then
 			echo -e "$MESSAGE"
 		# TEST 1=fichier
-		elif [ $DESTINATION -eq 1 ]; then
+		elif [ $DESTINATION -eq 1 ]; then			
 			echo -e  "$MESSAGE" >> "$PATHDEST_FICLOG"
 		# TEST 2=fichier et console
-		elif [ $DESTINATION -eq 2 ]; then
+		elif [ $DESTINATION -eq 2 ]; then			
 			echo -e  "$MESSAGE"
 			echo -e  "$MESSAGE" >> "$PATHDEST_FICLOG"
 		fi

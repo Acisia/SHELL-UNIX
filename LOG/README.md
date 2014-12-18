@@ -35,7 +35,7 @@ Syntaxe  :
 printMessageTo "Message à afficher"
 ```
 
-### J'affiche avec un style de formattage uniquement sur l'écran
+### J'affiche avec un style de formatage uniquement sur l'écran
 Syntaxe  :
 ```shell
 printMessageTo "Message à afficher" "2"
@@ -47,7 +47,7 @@ Syntaxe  :
 printMessageTo "Message à afficher" "0" "1" "$PATHDEST_FICLOG"
 ```
 
-### J'affiche avec un style de formattage uniquement dans le fichier de log  $PATHDEST_FICLOG
+### J'affiche avec un style de formatage uniquement dans le fichier de log  $PATHDEST_FICLOG
 Syntaxe  :
 ```shell
 printMessageTo "Message à afficher" "2" "1" "$PATHDEST_FICLOG" "$PATHDEST_FICLOG"
@@ -59,7 +59,7 @@ Syntaxe  :
 printMessageTo "Message à afficher" "0" "2" "$PATHDEST_FICLOG"
 ```
 
-### J'affiche avec un style de formattage à l'écran et dans le fichier de log  $PATHDEST_FICLOG
+### J'affiche avec un style de formatage à l'écran et dans le fichier de log  $PATHDEST_FICLOG
 Syntaxe  :
 ```shell 
 printMessageTo "Message à afficher" "2" "2" "$PATHDEST_FICLOG"
