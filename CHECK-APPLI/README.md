@@ -25,6 +25,12 @@ Syntaxe  :
 checkUserRoot
 ```
 
+### Tester sur l'utilisateur connecté soit bien oracle pour lancer le script
+Syntaxe  :
+ ```shell
+checkUser "oracle"
+```
+
 ### Vérifier qu'une application est installée
 Syntaxe  :
  ```shell

@@ -326,6 +326,17 @@ checkUserRoot(){
 	   echo -e "\033[32m[CTRL-DROIT]\033[0m USER : ROOT : \033[32mOK\033[0m"
 	fi
 }
+# Test de user connecté
+# checkUser $login
+checkUser(){
+	# Vérifier que l'utilisateur connecté est le même que le parametre en entrée
+	if [[ `id -un` != $1 ]]; then
+	   echo -e "\033[31m[ERREUR]\033[0m Ce script doit être lancé avec l'utilisateur \033[31m $1 \033[0m"	   
+	   exit 1
+	else	
+	   echo -e "\033[32m[CTRL-DROIT]\033[0m USER : $1 : \033[32mOK\033[0m"
+	fi
+}
 ###################################################################################################################
 #
 # GESTION DOSSIER FICHIER
