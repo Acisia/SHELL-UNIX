@@ -499,8 +499,9 @@ execReqOracle(){
 	check2ParamOk $SQLFILEIN $FILEOUT1	
 	# $bdd_login/$bdd_motdepass@$bdd_host:$bdd_port/$bdd_name
 	sqlplus -s $bdd_login/$bdd_motdepass@$bdd_host:$bdd_port/$bdd_name	@$SQLFILEIN >> $FILEOUT1	;
-	
+	retval=$?
 	checkPathFile "$FILEOUT1"  "$FILEOUT1"
+	return $retval
 }
  
 # fonction loader oracle 
@@ -557,9 +558,12 @@ execReqParamOracle(){
 	fi
 	check2ParamOk $SQLQUERY $FILEOUT	
 	ACTIONSQL=`sqlplus $bdd_login/$bdd_motdepass@$bdd_host:$bdd_port/$bdd_name << EOF
+	whenever sqlerror exit failure
 	$SQLQUERY
 	EOF >> $FILEOUT	`
+	retval=$?
 	checkPathFile "$FILEOUT" "$FILEOUT"
+	return $retval
 }
 
 ###################################################################################################################
