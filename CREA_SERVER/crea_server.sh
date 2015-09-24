@@ -57,6 +57,12 @@ if [ $? -gt 0 ]; then
 #Mise a jour du systeme	
 apt-get update
 
+
+# Installation Package essentiel
+apt-get install build-essential
+
+exit 1
+
 # Installation XAMPP
 cd /usr/src
 wget --no-check-certificate  https://www.apachefriends.org/xampp-files/5.6.12/xampp-linux-5.6.12-0-installer.run
