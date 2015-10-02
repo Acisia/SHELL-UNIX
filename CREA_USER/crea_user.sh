@@ -114,11 +114,14 @@ getTplFic ".vimrc" "$CREA_USER" "$CREA_GROUP" "$DIR_HOME" "$DIR_TPL"
 echo "     |         | - CREATION FICHIER BASH_ALIASES" 
 getTplFic ".bash_aliases" "$CREA_USER" "$CREA_GROUP" "$DIR_HOME" "$DIR_TPL"
 #Création du fichier .gitconfig
-echo "     |         | - CREATION FICHIER GITCONFIC" 
+echo "     |         | - CREATION FICHIER GITCONFIG" 
 getTplFic ".gitconfig" "$CREA_USER" "$CREA_GROUP" "$DIR_HOME" "$DIR_TPL"
 #Ajout du name et de l adresse mail git
 echo "        name = $CREA_USER" >> "$DIR_HOME/.gitconfig"
 echo "        email = $USER_ADRESSEMAIL" >> "$DIR_HOME/.gitconfig"
+#creation des cle ssh
+echo "     |         | - CREATION CLE SSH"
+ssh-keygen -C "$USER_ADRESSEMAIL" -t rsa -f "$DIR_HOME/.ssh/id_rsa" -q -N ""
 
 # RECAP INFORMATION
 echo "     | ---------------------------------------------" 
@@ -127,5 +130,9 @@ echo "     |  - PASSWD : $USER_PASSWD"
 echo "     |  - GROUP : $CREA_GROUP" 
 echo "     |  - Dossier utilisateur : $DIR_HOME" 
 echo "     |  - Dossier Git : $DIR_HOME_PROJECT" 
+echo "     |  - Cle SSH : $DIR_HOME/.ssh/"
 echo "     | ---------------------------------------------" 
+cat $DIR_HOME/.ssh/id_rsa.pub
+echo "     | ---------------------------------------------"
+echo "     | "
 echo "    FIN" 
