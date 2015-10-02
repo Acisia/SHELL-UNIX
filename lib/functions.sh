@@ -12,34 +12,6 @@
 # AFFICHAGE CONSOLE ET LOG
 #
 ###################################################################################################################
-# checkLog $PATHDEST_FICLOG
-checkLog(){
-	PAHTDEST_REPLOG=$1
-	FICLOGNAME=$2
-	PATHDEST_FICLOG="$PAHTDEST_REPLOG/$FICLOGNAME"
-		# Vérification du dossier de log
-		if [ ! -e "$PAHTDEST_REPLOG" ]
-		then		
-			mkdir "$PAHTDEST_REPLOG"
-			chmod -R 755 "$PAHTDEST_REPLOG"
-			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
-		else			
-			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
-		fi
-		# Vérification du fichier de log
-		if [ ! -f "$PATHDEST_FICLOG" ]
-		then		
-			touch $PATHDEST_FICLOG			
-			chmod -R 755 "$PATHDEST_FICLOG"
-			TAILLE=`du -hs $PATHDEST_FICLOG`
-			echo -e "\033[32m[CTRL-LOG]\033[0m FICHIER $FICLOGNAME : \033[32mOK\033[0m -> $TAILLE"
-		else
-			chmod -R 755 "$PATHDEST_FICLOG"
-			TAILLE=`du -hs $PATHDEST_FICLOG`
-			echo -e "\033[32m[CTRL-LOG]\033[0m FICHIER $FICLOGNAME : \033[32mOK\033[0m -> $TAILLE"
-		fi
-}
-
 # printMessageTo  $MESSAGE  $FORMATTAGE $DESTINATION $PATHDEST_FICLOG
 printMessageTo(){
 	MESSAGE=$1 
@@ -108,8 +80,8 @@ getNbFicInDir(){
 	then
 		if [ ! "$SILENCEMODE" ]
 			then
-			printmessageToUser "[ERROR][DIRECTORY] $CHEMINDOSSIER : KO"
-			printmessageToUser "[ERROR][DIRECTORY] $CHEMINDOSSIER : KO" >>  "$PATHDEST_FICLOG"
+			#printMessageTo "Message à afficher" "0" "2" "$PATHDEST_FICLOG"
+			printMessageTo "[ERROR][DIRECTORY] $CHEMINDOSSIER : KO" "2" "2" "$PATHDEST_FICLOG"			
 		else	
 			echo 0
 		fi		
@@ -118,8 +90,7 @@ getNbFicInDir(){
 		NB_FILE=`ls -A1 $CHEMINDOSSIER | grep $EXTENSION | wc -l`
 		if [ ! "$SILENCEMODE" ]
 			then
-			printmessageToUser "Nombre de fichier $EXTENSION : $NB_FILE"
-			printmessageToUser "Nombre de fichier $EXTENSION : $NB_FILE" >>  "$PATHDEST_FICLOG"
+			printMessageTo "Nombre de fichier $EXTENSION : $NB_FILE" "2" "2" "$PATHDEST_FICLOG"
 		else	
 			echo $NB_FILE
 		fi
@@ -128,8 +99,7 @@ getNbFicInDir(){
 		NB_FILE=`ls -A1 $CHEMINDOSSIER | wc -l`
 		if [ ! "$SILENCEMODE" ]
 			then
-			printmessageToUser "Nombre de fichier : $NB_FILE"
-			printmessageToUser "Nombre de fichier : $NB_FILE" >>  "$PATHDEST_FICLOG"
+			printMessageTo "Nombre de fichier : $NB_FILE" "2" "2" "$PATHDEST_FICLOG"			
 		else
 			echo $NB_FILE
 		fi
@@ -204,18 +174,77 @@ getPasswd() {
 # Check
 #
 ###################################################################################################################
+# checkLog $PATHDEST_FICLOG
+checkLog(){
+	PAHTDEST_REPLOG=$1
+	FICLOGNAME=$2
+	PATHDEST_FICLOG="$PAHTDEST_REPLOG/$FICLOGNAME"
+		# Vérification du dossier de log
+		if [ ! -e "$PAHTDEST_REPLOG" ]
+		then		
+			mkdir "$PAHTDEST_REPLOG"
+			chmod -R 755 "$PAHTDEST_REPLOG"
+			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
+		else			
+			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
+		fi
+		# Vérification du fichier de log
+		if [ ! -f "$PATHDEST_FICLOG" ]
+		then		
+			touch $PATHDEST_FICLOG			
+			chmod -R 755 "$PATHDEST_FICLOG"
+			TAILLE=`du -hs $PATHDEST_FICLOG`
+			echo -e "\033[32m[CTRL-LOG]\033[0m FICHIER $FICLOGNAME : \033[32mOK\033[0m -> $TAILLE"
+		else
+			chmod -R 755 "$PATHDEST_FICLOG"
+			TAILLE=`du -hs $PATHDEST_FICLOG`
+			echo -e "\033[32m[CTRL-LOG]\033[0m FICHIER $FICLOGNAME : \033[32mOK\033[0m -> $TAILLE"
+		fi
+}
+setEnvironment(){
+	if [ $1 ]; then		
+		ENVSET=$(echo $1| tr '[:lower:]' '[:upper:]')
+	else		
+		printMessageTo "[ENV][INFO] Environnement de travail : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][ERROR] Pas d environnement défini en parametre "  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO]      INT (pour l'integration)"	 "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO]      REC (pour la recette)"	 "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO]      PROD (pour la production)"	 "2" "2" "$PATHDEST_FICLOG"
+		exit 1
+	fi
+	#test de l environnement
+	if [ $ENVSET = "INT" ]; then
+		#INTEGRATION : 1
+		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		return 1
+		exit 1
+	elif [ $ENVSET = "REC" ]; then
+		#RECETTE : 2
+		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		return 2
+		exit 1
+	elif [ $ENVSET = "PROD" ]; then
+		#PRODUCTION : 3
+		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		return 3
+		exit 1
+	else 
+		printMessageTo "[ENV][ERROR] Parametre invalide : INT ou REC ou PROD"  "2" "2" "$PATHDEST_FICLOG"
+		exit 1		
+	fi
 
+}
 checkVarOk(){
 	#Check if variable is ok or not
-	printmessageToUser "[CHECK] result parameter..."
+	printMessageTo "[CHECK] result parameter..."  "2" "2" "$PATHDEST_FICLOG"
 	if [ $# -eq 3 ]
 	then
 	    RESULT=1
-		printmessageToUser "[OK] variable is ok"
+		printMessageTo "[OK] variable is ok"  "2" "2" "$PATHDEST_FICLOG"
 	else    
 		if [ $# -eq 2 ]
 		then
-			printmessageToUser "[ERROR] $1 is missing because $2 is unknown"
+			printMessageTo "[ERROR] $1 is missing because $2 is unknown"  "2" "2" "$PATHDEST_FICLOG"
 			RESULT=0		
 		fi	
 	return $RESULT
@@ -227,13 +256,13 @@ check2ParamOk(){
 	#Check the parameters 1 (ne=not equal, eq=equal)
 	if [ $# -eq 0 ]
 	then
-		printmessageToUser "[ERROR][PARAM] $0 arguments are required "
+		printMessageTo "[ERROR][PARAM] $0 arguments are required "  "2" "2" "$PATHDEST_FICLOG"
 	fi
 
 	#check the parameters 2
 	if [ $# -eq 1 ]
 	then
-		printmessageToUser "[ERROR][PARAM]  2 arguments are required"
+		printMessageTo "[ERROR][PARAM]  2 arguments are required"  "2" "2" "$PATHDEST_FICLOG"
 	fi
 }
 
@@ -243,13 +272,13 @@ checkPathDst(){
 	CHEMINNOM=$2
 	if [ ! -e "$CHEMINDST" ]
 	then
-		printmessageToUser "[ERROR][DIRECTORY] $CHEMINNOM : KO"
-		printmessageToUser "$CHEMINNOM : CREATION"
+		printMessageTo "[ERROR][DIRECTORY] $CHEMINNOM : KO"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "$CHEMINNOM : CREATION"  "2" "2" "$PATHDEST_FICLOG"
 		mkdir "$CHEMINDST"
 		chmod -R 755 "$CHEMINDST"
-		printmessageToUser "$CHEMINNOM : OK"
+		printMessageTo "$CHEMINNOM : OK"  "2" "2" "$PATHDEST_FICLOG"
 	else
-		printmessageToUser "$CHEMINNOM : OK"	
+		printMessageTo "$CHEMINNOM : OK" "2" "2" "$PATHDEST_FICLOG"
 	fi
 }
 
@@ -260,11 +289,11 @@ checkPathFile(){
 	CHEMINNOM=$2
 	if [ ! -f "$CHEMINDST" ]
 	then		
-		printmessageToUser "[ERROR][FILE] $CHEMINNOM : KO : $CHEMINDST"		
+		printMessageTo "[ERROR][FILE] $CHEMINNOM : KO : $CHEMINDST"	 "2" "2" "$PATHDEST_FICLOG"	
 	else
 		chmod -R 755 "$CHEMINDST"
 	    TAILLE=`du -hs $CHEMINDST`
-		printmessageToUser "$CHEMINNOM : OK -> $TAILLE"	
+		printMessageTo "$CHEMINNOM : OK -> $TAILLE" "2" "2" "$PATHDEST_FICLOG"
 	fi
 }
 
@@ -283,7 +312,7 @@ checkPathBackupFile(){
 	# SI dossier de destination n est pas existant
 	if [ ! -e "$CHEMINDST" ]
 	then		
-		printmessageToUser "[ERROR][FILE] $CHEMINNOM : KO : $CHEMINDST"		
+		printMessageTo "[ERROR][FILE] $CHEMINNOM : KO : $CHEMINDST"	 "2" "2" "$PATHDEST_FICLOG"	
 	else
 		# si le dossier existe
 		CHEMINFICBACKUP="$CHEMINDST/$FILENAME.backup"
@@ -293,9 +322,9 @@ checkPathBackupFile(){
 			# Copie du fichier 
 			cp "$CHEMINSRC" "$CHEMINFICBACKUP"						
 			TAILLE=`du -hs $CHEMINFICBACKUP`
-			printmessageToUser "Copie du $CHEMINNOM : OK -> $TAILLE"	
+			printMessageTo "Copie du $CHEMINNOM : OK -> $TAILLE" "2" "2" "$PATHDEST_FICLOG"	
 		else
-			printmessageToUser "Fichier de backup existe deja"	
+			printMessageTo "Fichier de backup existe deja"	 "2" "2" "$PATHDEST_FICLOG"
 		fi
 	fi
 }
@@ -364,25 +393,15 @@ getStatFile(){
 	fic_NB_TOTAL_COL=`awk '{cnt=0 ; for(i=1; i<=NF; i++) {if($i != "") {cnt++}} {if (cnt > 2 && NR == 1) {print cnt}} }' FS=$SEPARATEUR "$FILESRC"`
 	
 	#[CONSOLE] Ecriture dans fichier de log
-	echo  "---------------------------------------------------------------"
-	echo  "   STATISTIQUE FICHIER		"
-	echo  "---------------------------------------------------------------"		
-	printmessageToUser "Nom du fichier : $FILENAME"
-	printmessageToUser "Chemin du fichier : $FILESRC"
-	printmessageToUser "Taille du fichier : $fic_TAILLE"
-	printmessageToUser "Total ligne : $fic_NB_TOTAL_LIGNE"	
-	printmessageToUser "Nb de colonne : $fic_NB_TOTAL_COL"	
-	printmessageToUser "SEPARATEUR:----->$SEPARATEUR<-------"	
-	#[LOG] Ecriture dans fichier de log
-	echo "$DATELOG ---------------------------" >> "$PATHDEST_FICLOG"
-	echo "$DATELOG   STATISTIQUE FICHIER	  " >> "$PATHDEST_FICLOG"
-	echo "$DATELOG ---------------------------" >> "$PATHDEST_FICLOG"
-	echo "$DATELOG - Nom du fichier : $FILENAME" >> "$PATHDEST_FICLOG"
-	echo "$DATELOG - Chemin du fichier : $FILESRC" >> "$PATHDEST_FICLOG"
-	echo "$DATELOG - Taille du fichier : $fic_TAILLE" >> "$PATHDEST_FICLOG"
-	echo "$DATELOG - Total ligne : $fic_NB_TOTAL_LIGNE"	 >> "$PATHDEST_FICLOG"
-	echo "$DATELOG - Nb de colonne : $fic_NB_TOTAL_COL" >> "$PATHDEST_FICLOG"	
-	
+	printMessageTo "---------------------------------------------------------------" "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "   STATISTIQUE FICHIER		" "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "---------------------------------------------------------------" "2" "2" "$PATHDEST_FICLOG"	
+	printMessageTo "Nom du fichier : $FILENAME"  "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "Chemin du fichier : $FILESRC" "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "Taille du fichier : $fic_TAILLE" "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "Total ligne : $fic_NB_TOTAL_LIGNE" "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "Nb de colonne : $fic_NB_TOTAL_COL" "2" "2" "$PATHDEST_FICLOG"
+	printMessageTo "SEPARATEUR:----->$SEPARATEUR<-------"		
 }
 # fonction suppression de fichier s'il est présent seulement
 # deleteFile [chemin de destination] [nom du fichier]
@@ -392,10 +411,10 @@ deleteFile(){
 	FILENAME=$(basename $1)
 	if [ ! -f "$CHEMINDST" ]
 	then		
-		printmessageToUser "[INFO][FILE] $FILENAME : Fichier inexistant"		
+		printMessageTo "[INFO][FILE] $FILENAME : Fichier inexistant" "2" "2" "$PATHDEST_FICLOG"		
 	else
 		rm "$CHEMINDST"	    
-		printmessageToUser "[DELETE][FILE] $CHEMINDST : SUPPRESSION $CHEMINNOM"	
+		printMessageTo "[DELETE][FILE] $CHEMINDST : SUPPRESSION $CHEMINNOM" "2" "2" "$PATHDEST_FICLOG"	
 	fi
 }
 # deleteFile [chemin de destination] [nom du fichier]
@@ -404,16 +423,16 @@ deleteFiles(){
 	CHEMINNOM="$2"
 	# Creation d un boucle ls pour traiter tous les fichiers
 		cnt=1
-		printmessageToUser "[INFO][PATH] $CHEMINDST"
+		printMessageTo "[INFO][PATH] $CHEMINDST" "2" "2" "$PATHDEST_FICLOG"
 		ls $CHEMINDST | while read i
 		do
 			FILENAME=$(basename $i)
 			if [ ! -f "$CHEMINDST/$i" ]
 			then		
-				printmessageToUser "[INFO][FILE] $FILENAME : Fichier inexistant"		
+				printMessageTo "[INFO][FILE] $FILENAME : Fichier inexistant" "2" "2" "$PATHDEST_FICLOG"		
 			else
 				rm "$CHEMINDST/$i"	    
-				printmessageToUser "[DELETE][FILE] $CHEMINDST/$i : SUPPRESSION $CHEMINNOM"	
+				printMessageTo "[DELETE][FILE] $CHEMINDST/$i : SUPPRESSION $CHEMINNOM" "2" "2" "$PATHDEST_FICLOG"	
 			fi
 			cnt=$(($cnt+1))
 		done
@@ -443,12 +462,12 @@ unzipFile(){
 	FILENAME=$(basename $1)
 	if [ ! -f "$CHEMINSRC" ]
 	then		
-		printmessageToUser "[INFO][ZIPFILE] $FILENAME : Fichier inexistant"		
+		printMessageTo "[INFO][ZIPFILE] $FILENAME : Fichier inexistant"	 "2" "2" "$PATHDEST_FICLOG"	
 	else
 		cd $CHEMINDST		
 		unzip -o "$CHEMINSRC"   
 		cd $PATHROOT
-		printmessageToUser "[INFO][ZIPFILE] $CHEMINSRC : DECOMPRESSEE DANS $CHEMINDST"	
+		printMessageTo "[INFO][ZIPFILE] $CHEMINSRC : DECOMPRESSEE DANS $CHEMINDST" "2" "2" "$PATHDEST_FICLOG"	
 		deleteFile $CHEMINSRC "Fichier Archive $FILENAME"
 	fi
 }
@@ -469,17 +488,17 @@ moveFile(){
 	CHEMINFICBACKUP="$CHEMINDST/$FILENAME"
 	if [ ! -e "$CHEMINDST" ]
 	then		
-		printmessageToUser "[ERROR][PATH] $CHEMINNOM : KO : $CHEMINDST"		
+		printMessageTo "[ERROR][PATH] $CHEMINNOM : KO : $CHEMINDST" "2" "2" "$PATHDEST_FICLOG"		
 	else
-		printmessageToUser "[OK][PATH] $CHEMINDST"	
+		printMessageTo "[OK][PATH] $CHEMINDST" "2" "2" "$PATHDEST_FICLOG"	
 		if [ -f "$CHEMINSRC" ]
 			then
 			# deplacement du fichier 
 			mv "$CHEMINSRC" "$CHEMINDST"
 			TAILLE=`du -hs $CHEMINFICBACKUP`
-			printmessageToUser "[OK][FILE] Deplacement du $CHEMINNOM : OK -> $TAILLE"	
+			printMessageTo "[OK][FILE] Deplacement du $CHEMINNOM : OK -> $TAILLE" "2" "2" "$PATHDEST_FICLOG"	
 		else
-			printmessageToUser "[ERROR][FIILE] Le fichier source n existe pas"	
+			printMessageTo "[ERROR][FIILE] Le fichier source n existe pas" "2" "2" "$PATHDEST_FICLOG"	
 		fi
 	fi
 }
@@ -550,11 +569,11 @@ execReqParamOracle(){
 	fi
 	if [ "$1" ]
 	then
-		printmessageToUser "parameter 1 : $1"
+		printMessageTo "parameter 1 : $1" "2" "2" "$PATHDEST_FICLOG"
 	fi
 	if [ "$2" ]
 	then
-		printmessageToUser "parameter 2 : $2"
+		printMessageTo "parameter 2 : $2" "2" "2" "$PATHDEST_FICLOG"
 	fi
 	check2ParamOk $SQLQUERY $FILEOUT	
 	ACTIONSQL=`sqlplus $bdd_login/$bdd_motdepass@$bdd_host:$bdd_port/$bdd_name << EOF
@@ -580,15 +599,15 @@ execReqMysql(){
 	then
 		if [ $3 = "H"  ]
 		then
-			#printmessageToUser "html"
+			#printMessageTo "html" "2" "2" "$PATHDEST_FICLOG"
 			TYPEFILEOUT="--html"
 		elif [ $3 = "SCN"  ]
 		then
-			#printmessageToUser "sans colonne"
+			#printMessageTo "sans colonne" "2" "2" "$PATHDEST_FICLOG"
 			TYPEFILEOUT="--skip-column-names"
 		fi
 	else
-		#printmessageToUser "no-html"
+		#printMessageTo "no-html" "2" "2" "$PATHDEST_FICLOG"
 		TYPEFILEOUT=""
 	fi
 	check2ParamOk $SQLFILEIN $FILEOUT
@@ -609,11 +628,11 @@ execReqParamMysql(){
 	fi
 	if [ "$1" ]
 	then
-		printmessageToUser "parameter 1 : $1"
+		printMessageTo "parameter 1 : $1" "2" "2" "$PATHDEST_FICLOG"
 	fi
 	if [ "$2" ]
 	then
-		printmessageToUser "parameter 2 : $2"
+		printMessageTo "parameter 2 : $2" "2" "2" "$PATHDEST_FICLOG"
 	fi
 	check2ParamOk $SQLQUERY $FILEOUT
 	mysql -u $bdd_login -p$bdd_motdepass  --skip-column-names --host=$bdd_host $bdd_name -e  "$SQLQUERY"  >> "$FILEOUT" ; 
