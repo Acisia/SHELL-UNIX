@@ -121,7 +121,8 @@ echo "        name = $CREA_USER" >> "$DIR_HOME/.gitconfig"
 echo "        email = $USER_ADRESSEMAIL" >> "$DIR_HOME/.gitconfig"
 #creation des cle ssh
 echo "     |         | - CREATION CLE SSH"
-ssh-keygen -C "$USER_ADRESSEMAIL" -t rsa -f "$DIR_HOME/.ssh/id_rsa" -q -N ""
+checkPathDst "$DIR_HOME/.ssh/"
+su -l "$CREA_USER" -c 'ssh-keygen -C "$USER_ADRESSEMAIL" -t rsa -f "$DIR_HOME/.ssh/id_rsa" -q -N ""'
 
 # RECAP INFORMATION
 echo "     | ---------------------------------------------" 
