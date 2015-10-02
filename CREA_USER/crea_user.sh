@@ -30,6 +30,8 @@ echo  "-------------------------------------------------------------------------
 # TEST PRE-REQUIS
 # Vérifier que l'utilisateur est root
 checkUserRoot
+# Vérifie le dossier log
+checkLog $PATHDEST_REPLOG $FICLOGNAME
 # Vérifier que perl est installé pour la gestion des mots de passe
 checkAppli perl
 ##################################################################################################################

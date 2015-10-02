@@ -176,17 +176,17 @@ getPasswd() {
 ###################################################################################################################
 # checkLog $PATHDEST_FICLOG
 checkLog(){
-	PAHTDEST_REPLOG=$1
+	PATHDEST_REPLOG=$1
 	FICLOGNAME=$2
-	PATHDEST_FICLOG="$PAHTDEST_REPLOG/$FICLOGNAME"
+	PATHDEST_FICLOG="$PATHDEST_REPLOG/$FICLOGNAME"
 		# Vérification du dossier de log
-		if [ ! -e "$PAHTDEST_REPLOG" ]
+		if [ ! -e "$PATHDEST_REPLOG" ]
 		then		
-			mkdir "$PAHTDEST_REPLOG"
-			chmod -R 755 "$PAHTDEST_REPLOG"
-			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
+			mkdir "$PATHDEST_REPLOG"
+			chmod -R 755 "$PATHDEST_REPLOG"
+			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PATHDEST_REPLOG : \033[32mOK\033[0m"
 		else			
-			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PAHTDEST_REPLOG : \033[32mOK\033[0m"
+			echo -e "\033[32m[CTRL-LOG]\033[0m DOSSIER $PATHDEST_REPLOG : \033[32mOK\033[0m"
 		fi
 		# Vérification du fichier de log
 		if [ ! -f "$PATHDEST_FICLOG" ]
