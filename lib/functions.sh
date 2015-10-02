@@ -272,13 +272,13 @@ checkPathDst(){
 	CHEMINNOM=$2
 	if [ ! -e "$CHEMINDST" ]
 	then
-		printMessageTo "[ERROR][DIRECTORY] $CHEMINNOM : KO"  "2" "2" "$PATHDEST_FICLOG"
-		printMessageTo "$CHEMINNOM : CREATION"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ERROR][DIRECTORY] $CHEMINNOM : KO"  "2" 
+		printMessageTo "$CHEMINNOM : CREATION"  "2" 
 		mkdir "$CHEMINDST"
 		chmod -R 755 "$CHEMINDST"
-		printMessageTo "$CHEMINNOM : OK"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "$CHEMINNOM : OK"  "2" 
 	else
-		printMessageTo "$CHEMINNOM : OK" "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "$CHEMINNOM : OK" "2" 
 	fi
 }
 
