@@ -14,7 +14,7 @@
 ###################################################################################################################
 # printMessageTo  $MESSAGE  $FORMATTAGE $DESTINATION $PATHDEST_FICLOG
 printMessageTo(){
-	MESSAGE=$1 
+	MESSAGE=$1
 	FORMATTAGE=$2  # (0=sans, 1=titre, 2=mise en avant)
 	DESTINATION=$3 # (0=console, 1=fichier, 2=console et fichier)
 	PATHDEST_FICLOG=$4
@@ -35,6 +35,9 @@ printMessageTo(){
 		# TEST 2=mise en avant
 		elif [ $FORMATTAGE -eq 2 ]; then
 			MESSAGE="\t\t\033[33m|\033[0m\n\t\t\033[33m|--\033[0m $MESSAGE\n\t\t\033[33m|\033[0m"
+		# TEST 3=mise en avant
+		elif [ $FORMATTAGE -eq 3 ]; then
+			MESSAGE="\t\t\033[33m|---------------------------------------------------\n\t\t|$MESSAGE\n\t\t|---------------------------------------------------\033[0m"
 		fi
 	fi
 	#traitement de la destination 
@@ -270,15 +273,33 @@ check2ParamOk(){
 checkPathDst(){
 	CHEMINDST=$1
 	CHEMINNOM=$2
+	PATHDEST_FICLOG=$3
 	if [ ! -e "$CHEMINDST" ]
 	then
-		printMessageTo "[ERROR][DIRECTORY] $CHEMINNOM : KO"  "2" 
-		printMessageTo "$CHEMINNOM : CREATION"  "2" 
+		printMessageTo "\033[31m[ERROR][DIRECTORY]\033[0m  $CHEMINNOM : KO"  "2" 	 
+		if [ $# -eq 3 ]
+		then
+			printMessageTo "$CHEMINNOM : CREATION"  "2" "2" "$PATHDEST_FICLOG"			
+		else
+			printMessageTo "$CHEMINNOM : CREATION"  "2" 	
+		fi
 		mkdir "$CHEMINDST"
-		chmod -R 755 "$CHEMINDST"
-		printMessageTo "$CHEMINNOM : OK"  "2" 
-	else
-		printMessageTo "$CHEMINNOM : OK" "2" 
+		chmod -R 755 "$CHEMINDST"		
+		if [ $# -eq 3 ]
+		then
+			printMessageTo "\033[32m[DIRECTORY][OK]\033[0m $CHEMINNOM : OK"   "2" "2" "$PATHDEST_FICLOG"
+		else
+			printMessageTo "\033[32m[DIRECTORY][OK]\033[0m $CHEMINNOM : OK"   "2" 	
+		fi
+		return 0
+	else	
+		if [ $# -eq 3 ]
+		then
+			printMessageTo "\033[32m[DIRECTORY][OK]\033[0m $CHEMINNOM : OK"   "2" "2" "$PATHDEST_FICLOG"
+		else
+			printMessageTo "\033[32m[DIRECTORY][OK]\033[0m $CHEMINNOM : OK"  "2"	
+		fi
+		return 1
 	fi
 }
 
@@ -287,13 +308,26 @@ checkPathDst(){
 checkPathFile(){
 	CHEMINDST=$1
 	CHEMINNOM=$2
+	PATHDEST_FICLOG=$3
 	if [ ! -f "$CHEMINDST" ]
 	then		
-		printMessageTo "[ERROR][FILE] $CHEMINNOM : KO : $CHEMINDST"	 "2" "2" "$PATHDEST_FICLOG"	
+		if [ $# -eq 3 ]
+		then
+			printMessageTo "\033[31m[ERROR][FILE]\033[0m $CHEMINNOM : KO : $CHEMINDST" "2" "2" "$PATHDEST_FICLOG"
+		else
+			printMessageTo "\033[31m[ERROR][FILE]\033[0m $CHEMINNOM : KO : $CHEMINDST" "2" 	
+		fi
+		return 0
 	else
 		chmod -R 755 "$CHEMINDST"
-	    TAILLE=`du -hs $CHEMINDST`
-		printMessageTo "$CHEMINNOM : OK -> $TAILLE" "2" "2" "$PATHDEST_FICLOG"
+	    TAILLE=`du -hs "$CHEMINDST"`
+		if [ $# -eq 3 ]
+		then
+			printMessageTo "\033[32m[FILE][OK]\033[0m $CHEMINNOM : OK -> $TAILLE" "2" "2" "$PATHDEST_FICLOG"
+		else
+			printMessageTo "\033[32m[FILE][OK]\033[0m $CHEMINNOM : OK -> $TAILLE" "2" 	
+		fi
+		return 1
 	fi
 }
 
@@ -336,9 +370,11 @@ checkAppli(){
 	then
 		command -v $1 >/dev/null 2>&1
 		if [ $? -eq 0 ]; then
-			echo -e "\033[32m[CTRL-APPLI]\033[0m $1 : \033[32mOK\033[0m"
+			printMessageTo "\033[32m[CTRL-APPLI]\033[0m $1 : \033[32mOK\033[0m" "2"
+			return 1
 		else			
-			echo -e "\033[31m[ERREUR]\033[0m $1 : \033[31mKO\033[0m"
+			printMessageTo "\033[31m[ERREUR]\033[0m $1 : \033[31mKO\033[0m" "2"
+			return 0
 			exit 1
 		fi
 	fi	

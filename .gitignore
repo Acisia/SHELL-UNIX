@@ -21,6 +21,7 @@ local.properties
 #################
 # fichier de config
 SHELL-UNIX/config/config.dist
+/config/config.sh
 # fichier de param
 SHELL-UNIX/CREA_USER/user_param.sh
 
