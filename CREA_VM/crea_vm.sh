@@ -110,6 +110,7 @@ do
 			printMessageTo  "Pour mettre la VM en veille prolongée : \033[35mvagrant suspend\033[0m" "2"
 			printMessageTo  "Pour arrêter la VM : \033[35mvagrant halt\033[0m" "2"
 			printMessageTo  "Pour relancer la VM : \033[35mvagrant resume\033[0m" "2"
+			printMessageTo  "Pour provisionner la VM : \033[35mvagrant provision\033[0m" "2"
 		 ;;
 		 "q" | "Q" )  
 			echo "Au revoir...."
@@ -130,6 +131,7 @@ printMessageTo  "Voici les commandes de bases : " "2"
 printMessageTo  "\033[35mvagrant ssh\033[0m : connexion ssh " "2"   
 printMessageTo  "\033[35mvagrant up\033[0m : demarage VM " "2"   
 printMessageTo  "\033[35mvagrant halt\033[0m : arrêt VM " "2"   
+printMessageTo  "\033[35mvagrant provision\033[0m : mets a jour VM " "2"   
 
 
 exit 0

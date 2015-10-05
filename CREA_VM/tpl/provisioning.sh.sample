@@ -1,0 +1,149 @@
+#!/bin/bash
+###################################################################################################################
+# Author : Louis DAUBIGNARD
+# Date   : 05/10/2015
+#
+# Description : Script pour :
+#		- cree le serveur
+#
+# Syntax : provisioning.sh 
+#
+###################################################################################################################
+# FONCTIONS
+################################################################
+# printMessageTo  $MESSAGE  $FORMATTAGE $DESTINATION $PATHDEST_FICLOG
+printMessageTo(){
+	MESSAGE=$1
+	FORMATTAGE=$2  # (0=sans, 1=titre, 2=mise en avant)
+
+	if [ $FORMATTAGE ]; then
+		# TEST 0=Pas de formattage
+		if [ $FORMATTAGE -eq 0 ]; then
+			MESSAGE=$MESSAGE
+		# TEST 1=titre
+		elif [ $FORMATTAGE -eq 1 ]; then
+			MESSAGE="\033[33m------------------------------------------------------------------------\n\t\t$MESSAGE\n------------------------------------------------------------------------\033[0m"
+		# TEST 2=mise en avant
+		elif [ $FORMATTAGE -eq 2 ]; then
+			MESSAGE="\t\t\033[33m|\033[0m\n\t\t\033[33m|--\033[0m $MESSAGE\n\t\t\033[33m|\033[0m"
+		# TEST 3=mise en avant
+		elif [ $FORMATTAGE -eq 3 ]; then
+			MESSAGE="\t\t\033[33m|---------------------------------------------------\n\t\t|$MESSAGE\n\t\t|---------------------------------------------------\033[0m"
+		fi
+	fi	
+	#PAR DEFAUT : Sortie console
+	echo -e  "$MESSAGE"	
+}
+# Test si une application est installé
+# checkAppli $APPLICATION
+checkAppli(){
+	if [ "$1" ]
+	then
+		command -v $1 >/dev/null 2>&1
+		if [ $? -eq 0 ]; then
+			printMessageTo "\033[32m[CTRL-APPLI]\033[0m $1 : \033[32mOK\033[0m" "2"
+			return 1
+		else
+			command -version $1 >/dev/null 2>&1	
+			if [ $? -eq 0 ]; then
+				printMessageTo "\033[32m[CTRL-APPLI]\033[0m $1 : \033[32mOK\033[0m" "2"
+				return 1
+			else
+				printMessageTo "\033[31m[ERREUR]\033[0m $1 : \033[31mKO\033[0m" "2"
+				return 0
+				exit 1
+			fi
+		fi
+	fi	
+}
+installJava(){
+
+	if [ -d "/usr/lib/jvm/" ]; then
+		echo "Installation Java  JDK présente sous /usr/lib/jvm"
+		echo "Sortie..."
+		exit 0
+	fi
+
+
+	curl -L --cookie "oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/7u65-b17/jdk-7u65-linux-x64.tar.gz -o jdk-7-linux-x64.tar.gz
+	tar -xvf jdk-7-linux-x64.tar.gz
+
+	sudo mkdir -p /usr/lib/jvm
+	sudo mv ./jdk1.7.* /usr/lib/jvm/
+
+	sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/jdk1.7.0_65/bin/java" 1
+	sudo update-alternatives --install "/usr/bin/javac" "javac" "/usr/lib/jvm/jdk1.7.0_65/bin/javac" 1
+	sudo update-alternatives --install "/usr/bin/javaws" "javaws" "/usr/lib/jvm/jdk1.7.0_65/bin/javaws" 1
+
+	sudo chmod a+x /usr/bin/java 
+	sudo chmod a+x /usr/bin/javac 
+	sudo chmod a+x /usr/bin/javaws
+	sudo chown -R root:root /usr/lib/jvm/jdk1.7.0_65
+
+	rm jdk-7-linux-x64.tar.gz
+	rm -f equip_base.sh 
+	rm -f equip_java7_64.sh
+
+	java -version
+}
+################################################################
+# DEBUT PROCESS
+################################################################
+
+printMessageTo "	PROVISIONNING MACHINE  " "1"
+printMessageTo "" 
+printMessageTo "	MISE A JOUR SYSTEME" "3"
+apt-get update
+##################################################################################################################
+# MENU 
+#choix du systeme d exploitation
+printMessageTo  "    MENU INSTALLATION	 " "3" 
+printMessageTo  " 1 - Curl" "2" 
+printMessageTo  " 2 - Java" "2" 
+printMessageTo  " 3 - OpenHab" "2" 
+printMessageTo  " 3 - Serveur Samba" "2" 
+printMessageTo  " h - Commande " "2" 
+printMessageTo  " q - Quitter " "2" 
+
+
+printMessageTo  "   PROCESS 1: INSTALLATION Curl " "3" 
+checkAppli "curl"
+if [ $? -eq 0 ]; then
+	apt-get install curl -y 
+	checkAppli "curl"
+fi
+
+printMessageTo  "    PROCESS 2: INSTALLATION Java " "3" 
+checkAppli "java"
+if [ $? -eq 0 ]; then
+	echo "deb http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee /etc/apt/sources.list.d/webupd8team-java.list
+	echo "deb-src http://ppa.launchpad.net/webupd8team/java/ubuntu trusty main" | tee -a /etc/apt/sources.list.d/webupd8team-java.list
+	apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys EEA14886
+	apt-get update
+	apt-get install -y oracle-java8-installer
+	checkAppli "java"
+fi
+
+printMessageTo  "   PROCESS 3: INSTALLATION OpenHab " "3" 
+checkAppli "openhab"
+if [ $? -eq 0 ]; then
+	printMessageTo  " Ajout Cles pour repository openhab" "2"
+	wget -qO - 'https://bintray.com/user/downloadSubjectPublicKey?username=openhab' | sudo apt-key add -
+	printMessageTo  " Ajout repository aux sources" "2"
+	echo "deb http://dl.bintray.com/openhab/apt-repo stable main" | sudo tee /etc/apt/sources.list.d/openhab.list
+	printMessageTo  " Mise a jour des sources" "2"
+	apt-get update
+	printMessageTo  " Installation Openhab-runtime" "2"
+	apt-get install openhab-runtime
+	printMessageTo  " Demmarrage du service OpenHab" "2"
+	/etc/init.d/openhab start
+	printMessageTo  " Etat du service OpenHab" "2"
+	/etc/init.d/openhab status
+	printMessageTo  " Liste des addons OpenHab" "2"
+	apt-cache search openhab
+	printMessageTo  " Installation des addons OpenHab" "2"
+	apt-get install openhab-addon-io-dropbox
+	printMessageTo  " Ajout utilisateur openhab" "2"
+	usermod -a -G dialout openhab
+	printMessageTo  " http://localhost:8080/openhab.app?sitemap=yourname" "3"
+fi
