@@ -72,6 +72,7 @@ printMessageTo  " 2 - Vagrant Ubuntu Server 14.04 LTS (trusty64)" "2"
 printMessageTo  " 3 - Vagrant Debian 8 (Jessie64) " "2" 
 printMessageTo  " 4 - Vagrant Debian 7.5 (Wheezy64) " "2" 
 printMessageTo  " 5 - Vagrant Android x86 " "2" 
+printMessageTo  " h - Commande vagrant " "2" 
 printMessageTo  " q - Quitter " "2" 
 
 while true
@@ -99,6 +100,17 @@ do
 			printMessageTo  "    PROCESS 5: Android x86 dictcp/android-x86 " "3" 
 			vagrant init dictcp/android-x86; vagrant up --provider virtualbox
 		 ;;
+		 "h" )
+			printMessageTo  "    COMMANDES VAGRANT	 " "3" 
+			printMessageTo  "Pour ajouter une box : \033[35mvagrant box add\033[0m nom_de_ma_box url_de_la_box" "2"
+			printMessageTo  "Pour supprimer une box : \033[35mvagrant box remove\033[0m nom_de_ma_box" "2"
+			printMessageTo  "Pour lister les box existantes : \033[35mvagrant box list\033[0m" "2"
+			printMessageTo  "Pour lancer la machine virtuelle : \033[35mvagrant up\033[0m" "2"
+			printMessageTo  "Pour se connecter en SSH  à la VM : \033[35mvagrant ssh\033[0m" "2"
+			printMessageTo  "Pour mettre la VM en veille prolongée : \033[35mvagrant suspend\033[0m" "2"
+			printMessageTo  "Pour arrêter la VM : \033[35mvagrant halt\033[0m" "2"
+			printMessageTo  "Pour relancer la VM : \033[35mvagrant resume\033[0m" "2"
+		 ;;
 		 "q" | "Q" )  
 			echo "Au revoir...."
 			exit 1
@@ -111,5 +123,13 @@ do
 		 ;; 
 	esac
 done
-  
+##################################################################################################################
+# Commande Vagrant
+printMessageTo  "   RAPPEL COMMANDES VAGRANT BASIQUE	 " "3" 
+printMessageTo  "Voici les commandes de bases : " "2"   
+printMessageTo  "\033[35mvagrant ssh\033[0m : connexion ssh " "2"   
+printMessageTo  "\033[35mvagrant up\033[0m : demarage VM " "2"   
+printMessageTo  "\033[35mvagrant halt\033[0m : arrêt VM " "2"   
+
+
 exit 0
