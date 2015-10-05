@@ -62,6 +62,8 @@ if [ $# -eq 0 ]
 
 #creation espace de travail
 checkPathDst "$PATHVAGRANTVM/$PROJECTNAME" "Espace de travail vagrant"
+#deplacement dans l espace de travail
+cd "$PATHVAGRANTVM/$PROJECTNAME"
 #choix du systeme d exploitation
 printMessageTo  "    MENU VAGRANT	 " "3" 
 printMessageTo  "Faites votre choix dans la liste suivante : " "2" 
@@ -71,39 +73,43 @@ printMessageTo  " 3 - Vagrant Debian 8 (Jessie64) " "2"
 printMessageTo  " 4 - Vagrant Debian 7.5 (Wheezy64) " "2" 
 printMessageTo  " 5 - Vagrant Android x86 " "2" 
 printMessageTo  " q - Quitter " "2" 
-printMessageTo  " Tapper votre choix :"
-read reponse
-case "$reponse" in
- "1" )
-	printMessageTo  "    PROCESS 1: Ubuntu Server 14.04 LTS ubuntu/trusty32 " "3" 
-	vagrant init ubuntu/trusty32; vagrant up --provider virtualbox
- ;;
-  "2" )
-	printMessageTo  "    PROCESS 2: Ubuntu Server 14.04 LTS ubuntu/trusty64 " "3" 
-	vagrant init ubuntu/trusty64; vagrant up --provider virtualbox
- ;;
- "3" )
-	printMessageTo  "    PROCESS 3: Debian 8 debian/jessie64 " "3" 
-	vagrant init debian/jessie64; vagrant up --provider virtualbox
- ;;
- "4" )
-	printMessageTo  "    PROCESS 4: Debian 7.5 (Wheezy64) puphpet/debian75-x64 " "3" 
-	vagrant init puphpet/debian75-x64; vagrant up --provider virtualbox
- ;;
- "5" )
-	printMessageTo  "    PROCESS 5: Android x86 dictcp/android-x86 " "3" 
-	vagrant init dictcp/android-x86; vagrant up --provider virtualbox
- ;;
- "q" | "Q" )  
-	echo "Au revoir...."
-	exit 1
- ;; 
- * )
-   # Default option.    
-   # Empty input (hitting RETURN) fits here, too.
-   echo
-   printMessageTo "\033[31m[ERREUR]\033[0m mauvais choix" "2"
- ;;
- 
-esac  
+
+while true
+do
+	printMessageTo  " Tapper votre choix :"
+	read reponse
+	case "$reponse" in
+		 "1" )
+			printMessageTo  "    PROCESS 1: Ubuntu Server 14.04 LTS ubuntu/trusty32 " "3" 
+			vagrant init ubuntu/trusty32; vagrant up --provider virtualbox
+		 ;;
+		  "2" )
+			printMessageTo  "    PROCESS 2: Ubuntu Server 14.04 LTS ubuntu/trusty64 " "3" 
+			vagrant init ubuntu/trusty64; vagrant up --provider virtualbox
+		 ;;
+		 "3" )
+			printMessageTo  "    PROCESS 3: Debian 8 debian/jessie64 " "3" 
+			vagrant init debian/jessie64; vagrant up --provider virtualbox
+		 ;;
+		 "4" )
+			printMessageTo  "    PROCESS 4: Debian 7.5 (Wheezy64) puphpet/debian75-x64 " "3" 
+			vagrant init puphpet/debian75-x64; vagrant up --provider virtualbox
+		 ;;
+		 "5" )
+			printMessageTo  "    PROCESS 5: Android x86 dictcp/android-x86 " "3" 
+			vagrant init dictcp/android-x86; vagrant up --provider virtualbox
+		 ;;
+		 "q" | "Q" )  
+			echo "Au revoir...."
+			exit 1
+		 ;; 
+		 * )
+		   # Default option.    
+		   # Empty input (hitting RETURN) fits here, too.
+		   echo
+		   printMessageTo "\033[31m[ERREUR]\033[0m mauvais choix" "2"
+		 ;; 
+	esac
+done
+  
 exit 0
