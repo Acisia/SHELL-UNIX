@@ -19,7 +19,7 @@ clear
 #RECUPERATION DES FONCTIONS
 . "$PATHROOT/../lib/functions.sh"
 
-printMessageTo  "             $NOMPROJECTSCRIPT										" "1" 
+printMessageTo  "             $NOMPROJECTSCRIPT			" "1" 
 
 ##################################################################################################################
 #RECUPERATION DES PROPERTIES
@@ -36,7 +36,7 @@ checkPathDst "$PATHDEST_REPLOG" "Chemin LOG"
 ##################################################################################################################
 # TEST PRE-REQUIS
 # Vérifier que l'utilisateur est root
-printMessageTo  "             CONTROLE APPLI										" "3" 
+printMessageTo  "             CONTROLE APPLI			" "3" 
 #checkUserRoot
 # Vérifier que perl est installé pour la gestion des mots de passe
 checkAppli perl
@@ -107,6 +107,7 @@ do
 			printMessageTo  "Pour lister les box existantes : \033[35mvagrant box list\033[0m" "2"
 			printMessageTo  "Pour lancer la machine virtuelle : \033[35mvagrant up\033[0m" "2"
 			printMessageTo  "Pour se connecter en SSH  à la VM : \033[35mvagrant ssh\033[0m" "2"
+			printMessageTo  "\t\t|--Pour obtenir les droit root \033[35msudo su -\033[0m" "2"   
 			printMessageTo  "Pour mettre la VM en veille prolongée : \033[35mvagrant suspend\033[0m" "2"
 			printMessageTo  "Pour arrêter la VM : \033[35mvagrant halt\033[0m" "2"
 			printMessageTo  "Pour relancer la VM : \033[35mvagrant resume\033[0m" "2"
@@ -129,6 +130,7 @@ done
 printMessageTo  "   RAPPEL COMMANDES VAGRANT BASIQUE	 " "3" 
 printMessageTo  "Voici les commandes de bases : " "2"   
 printMessageTo  "\033[35mvagrant ssh\033[0m : connexion ssh " "2"   
+printMessageTo  "\t\t|--\033[35msudo su -\033[0m :  droit root sans mot de passe" "2"   
 printMessageTo  "\033[35mvagrant up\033[0m : demarage VM " "2"   
 printMessageTo  "\033[35mvagrant halt\033[0m : arrêt VM " "2"   
 printMessageTo  "\033[35mvagrant provision\033[0m : mets a jour VM " "2"   
