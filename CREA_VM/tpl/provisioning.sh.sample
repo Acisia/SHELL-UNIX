@@ -143,6 +143,10 @@ if [ $? -eq 0 ]; then
 	apt-cache search openhab
 	printMessageTo  " Installation des addons OpenHab" "2"
 	apt-get install openhab-addon-io-dropbox
+	apt-get install openhab-addon-action-astro
+	apt-get install openhab-addon-binding-astro
+	apt-get install openhab-addon-action-weather
+	apt-get install openhab-addon-binding-weather	
 	printMessageTo  " Ajout utilisateur openhab" "2"
 	usermod -a -G dialout openhab
 	printMessageTo  " Lister les interfaces reseaux	 " "2"
