@@ -229,7 +229,7 @@ setup_i18n
 ############################ Lib Fonctions ##############################
 #
 . "$PATHROOT/../lib/functions.sh"
-printMessageTo  "             ${msg_installer_name}			" "1" 
+printMessageTo  "             ${msg_installer_welcome}			" "1" 
 
 ########################## Fic Configuration ############################
 #
