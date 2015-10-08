@@ -26,13 +26,15 @@ SHELL-UNIX/config/config.dist
 /config/config-rec.sh
 /config/config-prod.sh
 # fichier de param
-SHELL-UNIX/CREA_USER/user_param.sh
+/CREA_USER/user_param.sh
+# fichier sql
+/BDD-MYSQL/sql
 
 #################
 ## Fichier de log
 #################
 *.log
-SHELL-UNIX/LOG/LOG/
+/LOG/LOG/
 
 #############
 ## Windows detritus
