@@ -28,8 +28,8 @@ SHELL-UNIX/config/config.dist
 # fichier de param
 /CREA_USER/user_param.sh
 # fichier sql
-/BDD-MYSQL/sql
-
+/BDD-MYSQL/sql/
+*.sqlfusion.sql
 #################
 ## Fichier de log
 #################

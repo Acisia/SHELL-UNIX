@@ -16,19 +16,13 @@ NOMPROJECTSCRIPT=" CREATION NOUVEAU PROJET MYSQL"
 VAL_SEPARATEUR=";"
 VAL_SCHEMA="b_$2"
 VAL_SCHEMA_USER="u_$2"
+VAL_SCHEMA_PASSWD="$3"
 #RECUPERATION DES FONCTIONS
 . "$PATHROOT/../lib/functions.sh"
 
 printMessageTo	"             $NOMPROJECTSCRIPT										" "1" 
 
 ##################################################################################################################
-if [ $2 ]
-	then
-		printMessageTo  "  ***  $2	***	" "2" 
-	else
-		printMessageTo "\033[31m[ERREUR]\033[0m Pas de parametre entree (bddMySqlNewProject.sh int nomBDD)" "2"
-		exit 1
-fi	
 #TEST DE L ENVIRONNEMENT
 if [ $1 ]
 	then
@@ -37,6 +31,22 @@ if [ $1 ]
 		setEnvironment
 fi	
 ret=$?
+#TEST PRESENCE DU NOM DE BDD / UTILISATEUR
+if [ $2 ]
+	then
+		printMessageTo  "\033[32m[BDD][OK]\033[0m  ***  $2	***	" "2" 
+	else
+		printMessageTo "\033[31m[ERREUR]\033[0m Pas de parametre BDD entree (bddMySqlNewProject.sh int nomBDD)" "2"
+		exit 1
+fi	
+#TEST PRESENCE DU MOT DE PASSE
+if [ $3 ]
+	then
+		printMessageTo  "\033[31m[PASSWD][OK]\033[0m  Mot de passe OK	" "2" 
+	else
+		printMessageTo "\033[31m[ERREUR]\033[0m Pas de parametre MDP entree (bddMySqlNewProject.sh int nomBDD MDP)" "2"
+		exit 1
+fi	
 #RECUPERATION DES PROPERTIES
 configEnvironment "$ret" "$PATHROOT/../config"
 #CHECK DES LOGS
@@ -69,4 +79,4 @@ if [ $retval -eq 0 ]
 		printMessageTo "\033[31m[ERREUR]\033[0m $(date +%d/%m/%Y-%H:%M:%S) - TRAITEMENT KO" "2"
 fi
 
-
+printMessageTo "\t\t BASE DE DONNEE : \033[35m${VAL_SCHEMA}\033[0m\n\t\t UTILISATEUR : \033[35m${VAL_SCHEMA_USER}\033[0m \n\t\t MOT DE PASSE : \033[35m${VAL_SCHEMA_PASSWD}\033[0m" "4"
