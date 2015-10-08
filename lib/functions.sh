@@ -208,35 +208,88 @@ setEnvironment(){
 	if [ $1 ]; then		
 		ENVSET=$(echo $1| tr '[:lower:]' '[:upper:]')
 	else		
-		printMessageTo "[ENV][INFO] Environnement de travail : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
-		printMessageTo "[ENV][ERROR] Pas d environnement défini en parametre "  "2" "2" "$PATHDEST_FICLOG"
-		printMessageTo "[ENV][INFO]      INT (pour l'integration)"	 "2" "2" "$PATHDEST_FICLOG"
-		printMessageTo "[ENV][INFO]      REC (pour la recette)"	 "2" "2" "$PATHDEST_FICLOG"
-		printMessageTo "[ENV][INFO]      PROD (pour la production)"	 "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO] Environnement de travail : $ENVSET"  "2" 
+		printMessageTo "[ENV][ERROR] Pas d environnement défini en parametre "  "2" 
+		printMessageTo "[ENV][INFO]      INT (pour l'integration)"	 "2" 
+		printMessageTo "[ENV][INFO]      REC (pour la recette)"	 "2" 
+		printMessageTo "[ENV][INFO]      PROD (pour la production)"	 "2"
 		exit 1
 	fi
 	#test de l environnement
 	if [ $ENVSET = "INT" ]; then
 		#INTEGRATION : 1
-		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" 
 		return 1
 		exit 1
 	elif [ $ENVSET = "REC" ]; then
 		#RECETTE : 2
-		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" 
 		return 2
 		exit 1
 	elif [ $ENVSET = "PROD" ]; then
 		#PRODUCTION : 3
-		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][INFO] PARAMETRE : $ENVSET"  "2" 
 		return 3
 		exit 1
 	else 
-		printMessageTo "[ENV][ERROR] Parametre invalide : INT ou REC ou PROD"  "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "[ENV][ERROR] Parametre invalide : INT ou REC ou PROD"  "2" 
 		exit 1		
 	fi
 
 }
+#configEnvironment [ENVPARAM] [PATH_FILE_CONFIG]
+configEnvironment() {
+	if [ "$2" ]; then
+		PATH_FILE_CONFIG="$2"
+		printMessageTo "[ENV][INFO] CHEMIN : $PATH_FILE_CONFIG"  "2" 
+	else
+		printMessageTo "[ENV][ERROR] Pas de chemin de fichier de config defini en parametre"  "2" 
+	fi	
+
+	if [ $1 ]; then
+		if [ $1 = 1 ]; then
+			printMessageTo "[ENV][INFO] Environnement de travail : INTEGRATION"  "2" 
+			PATH_FILE_CONFIG_INT="$PATH_FILE_CONFIG/config-int.sh"
+			checkPathFile "$PATH_FILE_CONFIG_INT"  "$PATH_FILE_CONFIG_INT"
+			ret=$?
+			if [ $ret = 1 ]; then
+				. "$PATH_FILE_CONFIG_INT"
+			else 
+				printMessageTo "[ENV][ERROR] Fichier de configuration (config-int.sh) absent"  "2" 
+				exit 1	
+			fi
+		elif [ $1 = 2 ]; then
+			printMessageTo "[ENV][INFO] Environnement de travail : RECETTE"  "2" 
+			PATH_FILE_CONFIG_REC="$PATH_FILE_CONFIG/config-rec.sh"
+			checkPathFile "$PATH_FILE_CONFIG_REC"  "$PATH_FILE_CONFIG_REC"
+			ret=$?
+			if [ $ret = 1 ]; then
+				. "$PATH_FILE_CONFIG_REC"
+			else 
+				printMessageTo "[ENV][ERROR] Fichier de configuration (config-rec.sh) absent"  "2" 
+				exit 1	
+			fi
+		elif [ $1 = 3 ]; then
+			printMessageTo "[ENV][INFO] Environnement de travail : PRODUCTION"  "2" 
+			PATH_FILE_CONFIG_PROD="$PATH_FILE_CONFIG/config-prod.sh"
+			checkPathFile "$PATH_FILE_CONFIG_PROD"  "$PATH_FILE_CONFIG_PROD"
+			ret=$?
+			if [ $ret = 1 ]; then
+				. "$PATH_FILE_CONFIG_PROD"
+			else 
+				printMessageTo "[ENV][ERROR] Fichier de configuration (config-prod.sh) absent"  "2" 
+				exit 1	
+			fi
+		else
+		 	printMessageTo "[ENV][ERROR] parametre entree non compris : 1=INT ou 2=REC ou 3=PROD"  "2" 
+			exit 1
+		fi
+	else
+		printMessageTo "[ENV][ERROR] Parametre invalide : 1=INT ou 2=REC ou 3=PROD"  "2" 
+		exit 1
+	fi	
+}
+
 checkVarOk(){
 	#Check if variable is ok or not
 	printMessageTo "[CHECK] result parameter..."  "2" "2" "$PATHDEST_FICLOG"
@@ -538,7 +591,158 @@ moveFile(){
 		fi
 	fi
 }
+###################################################################################################################
+#
+# GESTION SQL FICHIER
+#
+###################################################################################################################
+# createSQLextractCols [FILESRC] [PAHTDESTLOG] [PATHSRCFICFT] [TABLENAME]
+createSQLextractCols(){
+	FILESRC=$1
+	PAHTDESTLOG=$2
+	FILENAME=$(basename $1)
+	FILENAMESSEXT=$(basename $1 | cut -f1 -d '.' )
+	# Chemin du dossier FORMATTE
+	PATHSRCFICFT=$3
+	# Chemin et Nom du fichier de destination formatte
+	FILEDST="$PATHSRCFICFT/$FILENAMESSEXT.extractCols.sql"
+	TABLENAME=$4
+	echo "$DATELOG ---------------------------" #>> "$PAHTDESTLOG"
+	echo "$DATELOG   CREATION SQL EXTRACTION DU NOM DES COLONNES A IMPORTER	  " #>> "$PAHTDESTLOG"
+	echo "$DATELOG ---------------------------" #>> "$PAHTDESTLOG"
+	
+	echo "SET SERVEROUTPUT ON;"																				> $FILEDST
+	echo "EXEC DBMS_OUTPUT.PUT_LINE(' -- ---------   EXTRACT NOM DE COLONNE A IMPORTER   ----------- ');" 	>> $FILEDST
+	echo "SELECT CONCAT(NVL(PKG_PROMOPERF_SPEC.FV_GET_COLNAME_RETAIL(COLUMN_NAME),''),',')"					>> $FILEDST
+	echo "FROM user_tab_cols"																				>> $FILEDST
+	echo "INNER JOIN PP_MAPPING_COL_TAB"																	>> $FILEDST
+	echo "	ON user_tab_cols.COLUMN_NAME=PP_MAPPING_COL_TAB.MAPC_NIELSEN"									>> $FILEDST
+	echo "WHERE TABLE_NAME='"$TABLENAME"';"																	>> $FILEDST
+	echo "/"																								>> $FILEDST
+	echo "quit;"																							>> $FILEDST
+	
+	check_RESULT=`checkPathFile "$FILEDST"  "$FILENAMESSEXT.extractCols.sql"`
+	echo $check_RESULT
+	echo "$DATELOG - $check_RESULT" >> "$PAHTDESTLOG"		
+}
+# createSQLcreateTable [FILESRC] [PAHTDESTLOG] [PATHSRCFICFT] [PATHSRCAWK] [TABLENAME]
+createSQLcreateTable(){
+	FILESRC="$1"
+	PAHTDESTLOG=$2
+	FILENAME=$(basename "$1")
+	FILENAMESSEXT=$(basename "$1" | cut -f1 -d '.' )
+	# Chemin du dossier FORMATTE
+	PATHSRCFICFT=$3
+	# Chemin et Nom du fichier de destination formatte
+	FILEDST="$PATHSRCFICFT/$FILENAMESSEXT"
+	PATHSRCAWK=$4
+	TABLENAME=$5
+	
+	#defaut tabulation
+	SEPARATEUR="\t"
+	#taille du fichier
+	fic_TAILLE=`du -hs "$FILESRC"`
+	#Nombre de ligne total
+	fic_NB_TOTAL_LIGNE=`awk 'END {print NR }' "$FILESRC" `	
+	#Affiche le Nombre champs
+	fic_NB_TOTAL_COL=`awk '{cnt=0 ; for(i=1; i<=NF; i++) {if($i != "") {cnt++}} {if (cnt > 2 && NR == 1) {print cnt}} }' FS=$SEPARATEUR "$FILESRC"`
+	
+	#Generation à partir des entetes de colonne du fichier sql create table
+	gawk -v newNB_TOTAL_COL=$fic_NB_TOTAL_COL -v newFILENAME=$FILENAMESSEXT -v newTABLENAME=$TABLENAME -v newDATE="$(date '+%d/%m/%Y %H:%M:%S')" -f $PATHSRCAWK/createSQLcreateTable.awk "$FILESRC" > $FILEDST.sql
+	check_RESULT=`checkPathFile "$FILEDST.sql"  "$FILENAMESSEXT.sql"`
+	echo $check_RESULT
+	echo "$DATELOG - $check_RESULT" >> "$PAHTDESTLOG"		
+}
 
+# createSQLloadData [FILESRCENTETE] [PAHTDESTLOG] [PATHSRCFICFT] [PATHSRCAWK] [FILESRCDATA] [TABLENAME]
+createSQLloadData(){
+	FILESRC=$1	
+	PAHTDESTLOG=$2
+	FILENAME=$(basename $1)
+	FILENAMESSEXT=$(basename $1 | cut -f1 -d '.' )
+	# Chemin du dossier FORMATTE
+	PATHSRCFICFT=$3
+	# Chemin et Nom du fichier de destination formatte
+	FILEDST="$PATHSRCFICFT/$FILENAMESSEXT"
+	PATHSRCAWK=$4
+	FILESRCDATA=$5
+	TABLENAME=$6
+	
+	#defaut tabulation
+	SEPARATEUR="\t"
+	#taille du fichier
+	fic_TAILLE=`du -hs "$FILESRC"`
+	#Nombre de ligne total
+	fic_NB_TOTAL_LIGNE=`awk 'END {print NR }' "$FILESRC" `	
+	#Affiche le Nombre champs
+	fic_NB_TOTAL_COL=`awk '{cnt=0 ; for(i=1; i<=NF; i++) {if($i != "") {cnt++}} {if (cnt > 2 && NR == 1) {print cnt}} }' FS=$SEPARATEUR "$FILESRC"`
+	echo " -> CHEMIN DES DATA :  $FILESRC.data"
+	echo " -> CHEMIN DU FICHIER DE CONTROLE :  $FILEDST.load.ctl"
+	#Generation à partir des entetes de colonne du fichier sql create table
+	gawk -v newNB_TOTAL_COL=$fic_NB_TOTAL_COL -v newTABLENAME=$TABLENAME -v newPATHFILENAME=$FILESRCDATA -f $PATHSRCAWK/createSQLloadData.awk "$FILESRC" > $FILEDST.load.ctl
+	check_RESULT=`checkPathFile "$FILEDST.load.ctl"  "$FILENAMESSEXT.load.ctl"`
+	echo $check_RESULT
+	echo "$DATELOG - $check_RESULT" >> "$PAHTDESTLOG"		
+}
+
+#fonction de creation de fichier sql avec template et remplacement de variable
+# createSqlFile [VARSRC] [VARDST] [FILESQLNAMESRC] [FILESQLNAMEDST] [FILESQLPATHSRC] [FILESQLPATHDST] 
+createSqlFile(){
+	#variable source a modifier
+	VARSRC="$1"	
+	#valeur de remplacement 
+	VARDST="$2"
+	#nom du fichier de destination
+	FILESQLNAMESRC="$3"
+	#nom du fichier de destination
+	FILESQLNAMEDST="$4"
+	#chemin du fichier source
+	FILESQLPATHSRC="$5"
+	#chemin du fichier de destination
+	if [ $6 ]; then
+			FILESQLPATHDST="$6"
+		else
+			FILESQLPATHDST="$FILESQLPATHSRC"
+		fi
+	# Execution de la substitution
+	sed "s/$VARSRC/$VARDST/g" "${FILESQLPATHSRC}/template/$FILESQLNAMESRC" > "${FILESQLPATHDST}/$FILESQLNAMEDST"
+	# test du resultat de la fusion
+	checkPathFile "${FILESQLPATHDST}/$FILESQLNAMEDST"  "$FILESQLNAMEDST"
+}
+
+#fonction de creation de fichier sql avec template et remplacement de variable dans le dossier template
+# createSqlFileInDir [PAHTDESTLOG] [FILESQLPATHSRC] [FILESQLPATHDST] 
+createSqlFileInDir(){
+	#chemin des logs
+	PATHDESTLOG="$1"
+	#chemin du fichier source
+	FILESQLPATHSRC="$2"
+	#chemin du fichier de destination
+	if [ $3 ]; then
+			FILESQLPATHDST="$3"
+		else
+			FILESQLPATHDST="$FILESQLPATHSRC"
+		fi
+		
+	# Creation d un boucle ls pour traiter tous les fichiers
+	cnt=1
+	printMessageTo "[INFO][PATH] $FILESQLPATHSRC" "2"
+	ls "$FILESQLPATHSRC" | while read i
+	do
+		FILENAME=$(basename $i)
+		if [ ! -f "$FILESQLPATHSRC/$i" ]
+		then		
+			printMessageTo "[INFO][FILE] $FILENAME : Fichier inexistant" "2"	
+		else
+			# Execution de la substitution des separateurs, et nom de schema dans le fichier template et creation des fichiers sql a executer
+			sed "s/\${VAL_SEPARATEUR}/$VAL_SEPARATEUR/g" "${FILESQLPATHSRC}/$FILENAME" |  sed "s/\${VAL_SCHEMA}/$VAL_SCHEMA/g" | sed "s/\${VAL_SCHEMA_USER}/$VAL_SCHEMA_USER/g"  > "${FILESQLPATHDST}/${FILENAME}fusion.sql"
+			# test du resultat de la fusion
+			checkPathFile "${FILESQLPATHDST}/${FILENAME}fusion.sql"  "${FILENAME}fusion.sql"			
+		fi
+		cnt=$(($cnt+1))
+	done
+	
+}
 ###################################################################################################################
 #
 # GESTION BDD ORACLE
@@ -626,61 +830,137 @@ execReqParamOracle(){
 # GESTION BDD MYSQL
 #
 ###################################################################################################################
+
+#fonction de creation d'un tunnel SSH pour mysql
+pr_mysql_ssh(){
+	ssh -l "$ssh_my_login" "$ssh_my_host" -p "$ssh_my_port" -i "$ssh_my_key" -N -f -C -L "$ssh_my_from_port":"$ssh_my_host_bdd":"$ssh_my_dest_port"
+}
+
+#fonction d'initialisation des parametres de connexion mysql
+pr_mysql_login(){
+	mysql_config_editor set --login-path="$bdd_my_login_path" --host="$bdd_my_host" --port="$bdd_my_port" --user="$bdd_my_login" --password
+}
+
+#fonction d'initialisation des parametres de connexion mysql
+execDumpMysql(){
+		#fichier de la liste des schemas bdd 		
+		checkPathFile "${PATHFICSCHEMASQL}"  "FICHIER LISTE DES SCHEMAS BDD"
+		if [ $? = 1 ]; then
+			NB_TOTAL_SCHEMA=`awk 'END {print NR }' "${PATHFICSCHEMASQL}" `	
+			if [ $NB_TOTAL_SCHEMA -gt 0 ]; then		
+					printMessageTo "[INFO][SCHEMA] $NB_TOTAL_SCHEMA Schemas à traiter"	"1"
+					#printMessageTo "${PATHFICSCHEMASQL}"   "2" 
+					chkLigne=0
+					while read ligne
+					do  
+							chkLigne=1
+						   	printMessageTo "[INFO][SCHEMA] TRAITEMENT $ligne "  "2" 
+						   	#chemin de destination du dump
+							PATH_FILE_DMP=${PATHSRCSQL_DDLSTR}/${ligne}.dmp
+							checkPathDst "${PATHSRCSQL_DDLSTR}" "${PATHSRCSQL_DDLSTR}"
+						    mysqldump --login-path=$bdd_my_login_path -d -u  $bdd_my_login  $ligne > $PATH_FILE_DMP					    
+						    if [ $? = 2 ]; then
+						    	printMessageTo "[ERROR][MYSQL]  ci dessus" "2"
+						    fi 
+							checkPathFile "$PATH_FILE_DMP"  "$PATH_FILE_DMP"											
+					done < "${PATHFICSCHEMASQL}"	
+					#test du retour chariot dans le fichier
+				   	if [ $chkLigne -eq 0 ]; then
+						printMessageTo "[ERROR][SCHEMA] Impossible de lire le nom du schema : vérifier le retour chariot en fin de ligne dans le fichier ${PATHFICSCHEMASQL}  ! "	  "2" 
+					else
+						printMessageTo "[INFO][SCHEMA] FIN DE TRAITEMENT  "  "2" 
+						return 1				
+					fi
+			else
+				printMessageTo "[ERROR][SCHEMA] Pas de Schema à traiter"  "2" 
+				return 0	
+			fi	
+		else
+			#printMessageTo "[ERROR][SCHEMA] FICHIER DE LISTE DE SCHEMA INTROUVABLE : vérifier le ${PATHFICSCHEMASQL}"
+			return 0	
+		fi
+}
 # fonction requete mysql --> execReqMysql [Nom du fichier sql a executer] [Nom du fichier d export] [H :format html, SC : sans entete]
 execReqMysql(){
 	SQLFILEIN=$1
 	FILEOUT=$2
-	
-	if [ $3 ]
-	then
+	if [ ! -r "$SQLFILEIN" ]
+	then		
+		printMessageTo "[ERROR][FILE] $SQLFILEIN : KO " "2"
+		return 1
+	fi
+	if [ $4 ]; then
+		if [ $4 = "NODB"  ]
+		then
+			BDDCHOICE=""
+		else
+			BDDCHOICE="$4"
+		fi
+	else		
+		BDDCHOICE="$bdd_my_name"
+	fi
+	if [ $3 ]; then
 		if [ $3 = "H"  ]
 		then
-			#printMessageTo "html" "2" "2" "$PATHDEST_FICLOG"
+			#printMessageTo "html" "2"
 			TYPEFILEOUT="--html"
-		elif [ $3 = "SCN"  ]
+		elif [ $3 = "SC"  ]
 		then
-			#printMessageTo "sans colonne" "2" "2" "$PATHDEST_FICLOG"
+			#printMessageTo "sans colonne"  "2" 
 			TYPEFILEOUT="--skip-column-names"
 		fi
 	else
-		#printMessageTo "no-html" "2" "2" "$PATHDEST_FICLOG"
+		#printMessageTo "no-html" "2"
 		TYPEFILEOUT=""
 	fi
-	check2ParamOk $SQLFILEIN $FILEOUT
-	mysql $TYPEFILEOUT -u $bdd_login -p$bdd_motdepass  $bdd_name < $SQLFILEIN  >> $FILEOUT ; 
-	checkPathFile "$FILEOUT"  "$FILEOUT"
+	check2ParamOk "$SQLFILEIN" "$FILEOUT"	
+	printMessageTo "COMMANDE : mysql $TYPEFILEOUT -h $bdd_my_host --port=$bdd_my_port -u $bdd_my_login -p$bdd_my_motdepass  $BDDCHOICE < $SQLFILEIN  >> $FILEOUT ;  " "2"	
+	mysql --login-path=$bdd_my_login_path $TYPEFILEOUT -u $bdd_my_login --default-character-set=utf8 $BDDCHOICE < "$SQLFILEIN"  >> "$FILEOUT" 2>&1;  
+	#checkPathFile "$FILEOUT"  "$FILEOUT"
+	return $?
 }
 
-#mysql -u  %MySqlUser% --password=%MySqlPwd% --default-character-set latin1 --host=%MySqlHost% mytest -e "drop table if exists temp_tdb_occ_occurence"
-# fonction requete mysql --> execReqMysql [Nom du fichier sql a executer] [Nom du fichier d export] [H :format html, SC : sans entete]
+# fonction requete mysql --> execReqParamMysql [requete sql a executer] [Nom du fichier d export] 
 execReqParamMysql(){	
 	SQLQUERY="$1"
 	FILEOUT="$2"
-	if [ "$3" ]
-	then
-		echo  "---------------------------------------------------------------"
-		echo  "$3"
-		echo  "---------------------------------------------------------------"
+	if [ $4 ]; then
+		if [ $4 = "NODB"  ]
+		then
+			BDDCHOICE=""
+		else
+			BDDCHOICE="$4"
+		fi
+	else		
+		BDDCHOICE="$bdd_my_name"
+	fi
+	if [ $3 ]; then
+		if [ $3 = "H"  ]
+		then
+			#printMessageTo "html" "2"
+			TYPEFILEOUT="--html"
+		elif [ $3 = "SC"  ]
+		then
+			#printMessageTo "sans colonne" "2"
+			TYPEFILEOUT="--skip-column-names"
+		fi
+	else
+		#printMessageTo "no-html" "2"
+		TYPEFILEOUT=""
 	fi
 	if [ "$1" ]
 	then
-		printMessageTo "parameter 1 : $1" "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "parameter 1 : $1" "2"
 	fi
 	if [ "$2" ]
 	then
-		printMessageTo "parameter 2 : $2" "2" "2" "$PATHDEST_FICLOG"
+		printMessageTo "parameter 2 : $2" "2"
 	fi
-	check2ParamOk $SQLQUERY $FILEOUT
-	mysql -u $bdd_login -p$bdd_motdepass  --skip-column-names --host=$bdd_host $bdd_name -e  "$SQLQUERY"  >> "$FILEOUT" ; 
-	checkPathFile "$FILEOUT"  "$FILEOUT"
+	
+	check2ParamOk "$SQLQUERY" "$FILEOUT"		
+	mysql --login-path=$bdd_my_login_path $TYPEFILEOUT -u $bdd_my_login --database=$BDDCHOICE -e  "$SQLQUERY" ;
+	# checkPathFile "$FILEOUT"  "$FILEOUT"
+	return $?
 }
 
-# fonction export bdd mysql --> exportBddMysql [Nom de base de donnees] [Nom du fichier d export]
-exportBddMysql(){
-	DATABASESRCNOM=$1
-	DATABASEFILENOM=$2
-	
-	check2ParamOk $DATABASESRCNOM  $DATABASEFILENOM 
-	mysqldump --host=$bdd_host --user=$bdd_login --password=$bdd_motdepass --default-character-set=latin1 $DATABASESRCNOM > $PATHDESTBDD/$DATABASEFILENOM
-	checkPathFile "$PATHDESTBDD/$DATABASEFILENOM"  "$DATABASEFILENOM"
-}
+

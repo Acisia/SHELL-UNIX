@@ -41,11 +41,34 @@ bdd_name="xxxxxx"
 bdd_port="1521"
 
 ############# BDD MYSQL
+# connexion normal
+#    mysql --host=$bdd_my_host --user=$bdd_my_login --password=$bdd_my_motdepass --port=$bdd_my_port
+# connexion mysql_config_editor
+#    mysql_config_editor set --login-path=$bdd_my_login_path --host=$bdd_my_host --port=$bdd_my_port --user=$bdd_my_login --password
+#    mysql --login-path=$bdd_my_login_path -u $bdd_my_login
 #Configuration de pass bdd
-bdd_m_host="localhost"
-bdd_m_login="xxxxxx"
-bdd_m_motdepass="xxxxxx"
-bdd_m_name="xxxxxx"
+bdd_my_host="localhost"
+bdd_my_login="xxxxxx"
+bdd_my_login_path="root_localhost_int"
+bdd_my_motdepass="xxxxxx"
+bdd_my_name="xxxxxx"
+bdd_my_port="3306"
+
+############# TUNNEL SSH MYSQL
+#  Creer un tunnel SSH 
+# 		ssh -l root nsxxxxx.ovh.net -p 22 -N -f -C -L 3307:127.0.0.1:33061
+#  Creer un tunnel SSH avec param
+# 		ssh -l $ssh_my_login $ssh_my_host -p $ssh_my_port -i "$ssh_my_key" -N -f -C -L $ssh_my_from_port:$ssh_my_host_bdd:$ssh_my_dest_port
+#  Se connecter en SSH avec clé privé
+# 		ssh -l root -p 22 -i /c/ssh/root\@nsxxxxx.ovh.net nsxxxxx.ovh.net
+ssh_my_host="xxxxx.hostname.ext"
+ssh_my_login="root"
+ssh_my_motdepass="xxxxxxx"
+ssh_my_port="22"
+ssh_my_from_port="3307"
+ssh_my_dest_port="33061"
+ssh_my_host_bdd="127.0.0.1"
+ssh_my_key="/c/ssh/xxxxxx"
 
 ###################################################################################################################
 #
