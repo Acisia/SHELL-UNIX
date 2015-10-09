@@ -441,10 +441,10 @@ checkAppli(){
 checkUserRoot(){
 	# Vérifier que l'utilisateur est root
 	if [[ $EUID -ne 0 ]]; then
-	   echo -e "\033[31m[ERREUR]\033[0m Ce script doit être lancé en root"	   
+	   printMessageTo "\033[31m[ERREUR]\033[0m Ce script doit être lancé en root"	"2"
 	   exit 1
 	else	
-	   echo -e "\033[32m[CTRL-DROIT]\033[0m USER : ROOT : \033[32mOK\033[0m"
+	   printMessageTo "\033[32m[CTRL-DROIT]\033[0m USER : ROOT : \033[32mOK\033[0m" "2"
 	fi
 }
 # Test de user connecté
