@@ -23,10 +23,15 @@ getMenu() {
 	#choix du systeme
 	printMessageTo  "    MENU	 " "3" 
 	printMessageTo  "Faites votre choix dans la liste suivante : " "2" 
-	printMessageTo  " 1 - Serveur Web standard LAMP" "2" 
-	printMessageTo  " 2 - Serveur Web XAMP" "2" 
-	printMessageTo  " h - Commande " "2" 
-	printMessageTo  " q - Quitter " "2" 
+	printMessageTo  " 1 - Cle apt/source.list" "21" 
+	printMessageTo  " 2 - Pre-requis et dependances" "21" 
+	printMessageTo  " 3 - Serveur Web standard LAMP" "21" 
+	printMessageTo  " 4 - Configuration Web standard LAMP" "21" 
+	printMessageTo  " 5 - Serveur Web XAMP" "21" 
+	printMessageTo  " 6 - Check Version" "21" 
+	printMessageTo  " 7 - " "21" 
+	printMessageTo  " h - Commande " "21" 
+	printMessageTo  " q - Quitter " "21" 
 
 }
 getSrcKeys() {
@@ -47,34 +52,70 @@ getSrcKeys() {
 			echo -e "\033[32m[OK]\033[0m clés mises a jour!"		
 		fi
 }
+installPaquet() {
+	if [ "$1" ];then
+		printMessageTo  "   INSTALLATION PAQUET : $1	 " "3" 
+		apt-get -y install "$1"
+	else	
+		printMessageTo  "   INSTALLATION PAQUET	 " "3" 
+		apt-get -y install
+	fi		
+}
+getVersion() {
+	if [ "$1" ];then
+		val_paquet=`apt-show-versions "$1" |cut -d" " -f1 |cut -d"/" -f1`
+		val_paquet_dist=`apt-show-versions "$1" |cut -d" " -f1 |cut -d"/" -f2`
+		val_version=`apt-show-versions "$1" |cut -d" " -f2`
+		val_version_st=`apt-show-versions "$1" |cut -d" " -f3`
+		printMessageTo  "   $1  " "3" 
+		printMessageTo  "   Paquet : 	$val_paquet " "2" 
+		printMessageTo  "   Distribution : 	$val_paquet_dist " "2" 
+		printMessageTo  "   Version : 	$val_version " "2" 
+		printMessageTo  "   Version : 	$val_version_st " "2" 
+		
+	fi	
+}
 installDependency() {
     apt-get update
-    apt-get -y install
-    apt-get -y install build-essential
-    apt-get -y install curl
-	apt-get -y install git-core 
-	apt-get -y install automake 
-	apt-get -y install autogen 
-	apt-get -y install libtool
-	apt-get -y install acl
-	apt-get -y install ruby
-	apt-get -y install ruby-dev	
+    installPaquet 
+    installPaquet build-essential
+	installPaquet apt-show-versions
+    installPaquet curl
+	installPaquet git-core 
+	installPaquet automake 
+	installPaquet autogen 
+	installPaquet libtool
+	installPaquet acl
+	installPaquet ruby
+	installPaquet ruby-dev	
+}
+installServeurBDD() {
+	installPaquet mysql-server-5.5
 }
 installServeurWeb() {
-	apt-get -y install apache2
-	apt-get -y install php5 
-	apt-get -y install php5-fpm 
-	apt-get -y install php5-curl 
-	apt-get -y install php5-cli 
-	apt-get -y install php5-common 
-	apt-get -y install php5-gd 
-	apt-get -y install php5-mysql 
+	installPaquet apache2
+	installPaquet php5 
+	installPaquet php5-fpm 
+	installPaquet php5-curl 
+	installPaquet php5-cli 
+	installPaquet php5-common 
+	installPaquet php5-gd 
+	installPaquet php5-mysql 
 }
 checkServeurWeb() {
 	printMessageTo  "   TEST LAMP	 " "3" 
 	service apache2 status	
 	whereis apache2	
-	php -v
+	printMessageTo  "   VERSION	 " "3" 	
+	getVersion php5
+	getVersion apache2
+	getVersion php5 
+	getVersion php5-fpm 
+	getVersion php5-curl 
+	getVersion php5-cli 
+	getVersion php5-common 
+	getVersion php5-gd 
+	getVersion php5-mysql
 }
 post_install() {
 	apt-get autoremove
@@ -84,6 +125,14 @@ installLamp() {
 	installServeurWeb
 	post_install
 	checkServeurWeb
+}
+configLamp() {
+	printMessageTo  "    LAMP	 " "3" 
+	printMessageTo  "/usr/sbin/apache2" "2"
+	printMessageTo  "/usr/lib/apache2 " "2"
+	printMessageTo  "/etc/apache2 " "2"
+	printMessageTo  "/usr/share/apache2" "2"
+	
 }
 installXamp() {
 	# Installation XAMPP
@@ -138,48 +187,57 @@ checkAppli perl
 printMessageTo  "    PROCESS $NOMPROJECTSCRIPT START	 " "3" 
 # Deplacement dans le dossier personnel de l'utilisateur
 cd ~
-#Gestion clés
-getSrcKeys
 
-#Mise a jour du systeme	
-apt-get update
-
-# Installation Package essentiel
-installDependency
 # affichage menu
 getMenu
 
 # traitement du choix
 while true
 do
+	printMessageTo  " Tapper \033[35mm\033[0m pour obtenir le menu"
 	printMessageTo  " Tapper votre choix :"
 	read reponse
 	case "$reponse" in
 		 "1" )
-			printMessageTo  "    PROCESS 1: Serveur web Lamp " "3" 
+			printMessageTo  "    PROCESS 1: Cle apt/source.list " "3" 
+			#Gestion clés
+			getSrcKeys	
+			#Mise a jour du systeme	
+			apt-get update
+		 ;;
+		 "2" )
+			printMessageTo  "    PROCESS 2: Pre-requis et dependances " "3" 
+			# Installation Package essentiel
+			installDependency
+		 ;;
+		 "3" )
+			printMessageTo  "    PROCESS 3: Serveur web Lamp " "3" 
 			installLamp			
 			exit 1
 		 ;;
-		  "2" )
-			printMessageTo  "    PROCESS 1: Serveur web Xamp " "3" 
+		  "4" )
+			printMessageTo  "    PROCESS 4: Configuration Serveur web Lamp " "3" 
+			configLamp
+			exit 1
+		 ;;
+		 "5" )
+			printMessageTo  "    PROCESS 5: Serveur web Xamp " "3" 
 			installXamp
 			exit 1
 		 ;;
-		 "3" )
-			printMessageTo  "    PROCESS 3:  " "3" 
-			
+		 "6" )
+			printMessageTo  "    PROCESS 6: Check Version " "3" 
+			checkServeurWeb
 		 ;;
-		 "4" )
-			printMessageTo  "    PROCESS 4: " "3" 
-			
-		 ;;
-		 "5" )
-			printMessageTo  "    PROCESS 5:  " "3" 
+		 "7" )
+			printMessageTo  "    PROCESS 7:  " "3" 
 			
 		 ;;
 		 "h" )
-			printMessageTo  "    COMMANDES  " "3" 
-			printMessageTo  "Pour sortir  : \033[35mq\033[0m " "2"
+			getMenu
+		 ;;
+		 "m" )
+			getMenu
 		 ;;
 		 "q" | "Q" )  
 			echo "Au revoir...."
@@ -190,6 +248,7 @@ do
 		   # Empty input (hitting RETURN) fits here, too.
 		   echo
 		   printMessageTo "\033[31m[ERREUR]\033[0m mauvais choix" "2"
+		   getMenu
 		 ;; 
 	esac
 done

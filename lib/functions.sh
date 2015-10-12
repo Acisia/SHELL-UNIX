@@ -41,6 +41,9 @@ printMessageTo(){
 		#Bloc resultat
 		elif [ $FORMATTAGE -eq 4 ]; then
 			MESSAGE="\033[33m-------------------------------------------------------------------------\n|\t\tFIN\t\t\t\t\t\t\t|\n-------------------------------------------------------------------------\n\n\033[0m$MESSAGE\n\n\033[33m-------------------------------------------------------------------------\033[0m"
+		#ligne sans heure
+		elif [ $FORMATTAGE -eq 21 ]; then
+			MESSAGE="\t\t\033[33m$MESSAGE\033[0m"
 		fi
 	fi
 	#traitement de la destination 
