@@ -12,7 +12,8 @@
 #CHEMIN RACINE
 PATHROOT="$PWD"
 NOMPROJECTSCRIPT="CHECK SERVEUR LINUX"
-
+FICHIERJSON="/var/www/html/compare.json"
+readonly $FICHIERJSON
 #RECUPERATION DES FONCTIONS
 . "$PATHROOT/../lib/functions.sh"
 clear
@@ -138,7 +139,7 @@ json_start(){
 	if [ "$val_format" -eq 1 ];then 		
 		echo -e "{\n\t\"hardware_lst\": {\n"
 	else
-		echo "{\"hardware_lst\":{"
+		echo "{\"hardware_lst\":{" >> "${FICHIERJSON}"
 	fi
 	
 }
@@ -148,7 +149,7 @@ json_end(){
 if [ "$val_format" -eq 1 ];then 		
 		echo -e "\n\t}\n}"
 	else
-		echo "}}"
+		echo "}}" >> "${FICHIERJSON}"
 	fi	
 }
 
@@ -170,7 +171,7 @@ json_encode(){
 	if [ "$val_format" -eq 1 ];then 		
 		echo -e "\t\t\"label\": \"$val_label\",\n\t\t\"value\": \"$val_value\""
 	else
-		echo "\"label\": \"$val_label\",\"value\": \"$val_value\""
+		echo "\"label\": \"$val_label\",\"value\": \"$val_value\"" >> "${FICHIERJSON}" 
 	fi
 	
 }
