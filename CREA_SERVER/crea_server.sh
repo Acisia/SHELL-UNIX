@@ -96,6 +96,11 @@ installServeurWeb() {
 	installPaquet apache2
 	installPaquet php5 
 	installPaquet php5-fpm 
+	installPaquet php5-gmp 
+	installPaquet php5-imap 
+	installPaquet php5-mcrypt 
+	installPaquet php5-sqlite 
+	installPaquet php5-xsl 
 	installPaquet php5-curl 
 	installPaquet php5-cli 
 	installPaquet php5-common 
@@ -107,15 +112,19 @@ checkServeurWeb() {
 	service apache2 status	
 	whereis apache2	
 	printMessageTo  "   VERSION	 " "3" 	
-	getVersion php5
 	getVersion apache2
 	getVersion php5 
 	getVersion php5-fpm 
+	getVersion php5-gmp 
+	getVersion php5-imap 
+	getVersion php5-mcrypt 
+	getVersion php5-sqlite 
+	getVersion php5-xsl 
 	getVersion php5-curl 
 	getVersion php5-cli 
 	getVersion php5-common 
 	getVersion php5-gd 
-	getVersion php5-mysql
+	getVersion php5-mysql 
 }
 post_install() {
 	apt-get autoremove
