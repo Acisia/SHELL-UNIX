@@ -48,6 +48,23 @@ else
 fi
 ##################################################################################################################
 # FONCTIONS
+installPaquet() {
+	if [ "$1" ];then
+		printMessageTo  "   INSTALLATION PAQUET : $1	 " "3" 
+		apt-get -y install "$1"
+	else	
+		printMessageTo  "   INSTALLATION PAQUET	 " "3" 
+		apt-get -y install
+	fi		
+}
+checkLsbRelease() {
+	val_lsbrelease=`lsb_release`
+	if [ "$val_lsbrelease" = "No LSB modules are available." ];then
+		installPaquet lsb-core
+	else 
+		printMessageTo "\033[32m[LSB_RELEASE][OK]\033[0m " "2"
+	fi
+}
 get_hostname(){
 	val_format="$1"
 	val_print="$2"
@@ -188,6 +205,7 @@ checkAppli perl
 # DEBUT PROCESS
 # Vérifier que l'utilisateur est root
 printMessageTo  "    PROCESS $NOMPROJECTSCRIPT START	 " "3" 
+checkLsbRelease
 # debut du fichier json
 json_start $val_format $val_print
 # recuperation des elements
