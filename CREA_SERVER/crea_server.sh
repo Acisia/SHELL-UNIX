@@ -80,14 +80,16 @@ installDependency() {
     installPaquet 
     installPaquet build-essential
 	installPaquet apt-show-versions
-    installPaquet curl
+    	installPaquet curl
 	installPaquet git-core 
 	installPaquet automake 
 	installPaquet autogen 
 	installPaquet libtool
 	installPaquet acl
 	installPaquet ruby
-	installPaquet ruby-dev	
+	installPaquet ruby-dev
+	installPaquet imagemagick 
+	installPaquet libmagickwand-dev
 }
 installServeurBDD() {
 	installPaquet mysql-server-5.5
@@ -105,7 +107,16 @@ installServeurWeb() {
 	installPaquet php5-cli 
 	installPaquet php5-common 
 	installPaquet php5-gd 
-	installPaquet php5-mysql 
+	installPaquet php5-mysql
+	installPaquet php5-intl
+	installPaquet php-pear
+	installPaquet php5-imagick 
+	installPaquet php5-ps
+	installPaquet php5-pspell 
+	installPaquet php5-recode 
+	installPaquet php5-snmp
+	installPaquet php5-tidy 
+	installPaquet php5-xmlrpc	
 }
 checkServeurWeb() {
 	printMessageTo  "   TEST LAMP	 " "3" 
@@ -125,6 +136,13 @@ checkServeurWeb() {
 	getVersion php5-common 
 	getVersion php5-gd 
 	getVersion php5-mysql 
+	getVersion php5-imagick 
+	getVersion php5-ps
+	getVersion php5-pspell 
+	getVersion php5-recode 
+	getVersion php5-snmp
+	getVersion php5-tidy 
+	getVersion php5-xmlrpc
 }
 post_install() {
 	apt-get autoremove
