@@ -31,10 +31,10 @@ SELECT CONCAT(DATE_FORMAT(SYSDATE(), "%d/%m/%Y %H:%i:%s")," - CREATION BDD ${VAL
 CREATE DATABASE IF NOT EXISTS ${VAL_SCHEMA} CHARACTER SET utf8 COLLATE utf8_general_ci;
 
 -- UTILISATEURS
-prompt *** Creation utilisateur u_fov4
+prompt *** Creation utilisateur
 SELECT CONCAT(DATE_FORMAT(SYSDATE(), "%d/%m/%Y %H:%i:%s")," - CREATION USER ${VAL_SCHEMA_USER}") FROM DUAL;
 
--- Mise en place des provill�ges utilisateur par sch�ma de base de donn�es
+-- Mise en place des provilleges utilisateur par schema de base de donnees
 -- Read Only
 -- GRANT SELECT ON *.* TO '${VAL_SCHEMA_USER}'@'127.0.0.1' IDENTIFIED BY '${VAL_SCHEMA_PASSWD}';
 -- All privillege
