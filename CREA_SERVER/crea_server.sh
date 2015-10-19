@@ -29,7 +29,7 @@ getMenu() {
 	printMessageTo  " 4 - Configuration Web standard LAMP" "21" 
 	printMessageTo  " 5 - Serveur Web XAMP" "21" 
 	printMessageTo  " 6 - Check Version" "21" 
-	printMessageTo  " 7 - " "21" 
+	printMessageTo  " 7 - Install MySql Serveur 5" "21" 
 	printMessageTo  " h - Commande " "21" 
 	printMessageTo  " q - Quitter " "21" 
 
@@ -239,8 +239,8 @@ do
 			checkServeurWeb
 		 ;;
 		 "7" )
-			printMessageTo  "    PROCESS 7:  " "3" 
-			
+			printMessageTo  "    PROCESS 7: Installation Serveur Mysql 5 " "3" 
+			installServeurBDD
 		 ;;
 		 "h" )
 			getMenu
