@@ -956,11 +956,11 @@ execReqParamMysql(){
 	fi
 	if [ "$1" ]
 	then
-		printMessageTo "parameter 1 : $1" "2"
+		printMessageTo "Requete : $1" "2"
 	fi
 	if [ "$2" ]
 	then
-		printMessageTo "parameter 2 : $2" "2"
+		printMessageTo "Parametre : $2" "2"
 	fi
 	
 	check2ParamOk "$SQLQUERY" "$FILEOUT"		

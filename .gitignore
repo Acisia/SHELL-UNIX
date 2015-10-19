@@ -30,6 +30,9 @@ SHELL-UNIX/config/config.dist
 # fichier sql
 /BDD-MYSQL/sql/
 *.sqlfusion.sql
+# fichier dump sql
+/BDD-MYSQL/dmp/
+*.dmp
 #################
 ## Fichier de log
 #################
