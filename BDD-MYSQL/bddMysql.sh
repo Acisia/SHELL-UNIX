@@ -62,7 +62,8 @@ ret=$?
 configEnvironment "$ret" "$PATHROOT/../config"
 #CHECK DES LOGS
 checkPathDst "$PATHDEST_REPLOG" "Chemin LOG"
-
+#CHECK DES DMP
+checkPathDst "$PATHROOT/dmp" "Chemin des dumps"
 
 ##################################################################################################################
 # TEST PRE-REQUIS
