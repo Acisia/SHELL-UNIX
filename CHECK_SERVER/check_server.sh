@@ -12,7 +12,7 @@
 #CHEMIN RACINE
 PATHROOT="$PWD"
 NOMPROJECTSCRIPT="CHECK SERVEUR LINUX"
-FICHIERJSON="/var/www/html/compare.json"
+FICHIERJSON="compare.json"
 readonly $FICHIERJSON
 #RECUPERATION DES FONCTIONS
 . "$PATHROOT/../lib/functions.sh"
@@ -75,7 +75,7 @@ get_hostname(){
 	json_encode "$val_hostname" "hostname" $val_format $val_print
 }
 get_osinfo(){
-	val_value="$1"
+	val_value=$(echo "$1"| sed s/\"//g)
 	val_label="$2"
 	val_format="$3"
 	val_print="$4"	
@@ -149,16 +149,32 @@ get_os(){
 
 fi
 }
-# JSON
+get_ip_public(){
+	IPPUB=`curl 'ipinfo.io' | jq '.ip,.hostname,.city,.region,.country,.loc,.org'`
+	IPPUBADR=`echo $IPPUB |cut -d "\"" -f2`
+	IPPUBNOM=`echo $IPPUB |cut -d "\"" -f4`
+	IPPUBVIL=`echo $IPPUB |cut -d "\"" -f6`
+	IPPUBREG=`echo $IPPUB |cut -d "\"" -f8`
+	IPPUBPAY=`echo $IPPUB |cut -d "\"" -f10`
+	IPPUBLOC=`echo $IPPUB |cut -d "\"" -f12`
+	IPPUBFOU=`echo $IPPUB |cut -d "\"" -f14`
+	readonly IPPUBADR
+	readonly IPPUBNOM
+	readonly IPPUBVIL
+	readonly IPPUBREG
+	readonly IPPUBPAY
+	readonly IPPUBLOC
+	readonly IPPUBFOU	
+}
+# JSON ---------------------------------------------
 json_start(){
 	val_format="$1"
 	val_print="$2"
 	if [ "$val_format" -eq 1 ];then 		
 		echo -e "{\n\t\"hardware_lst\": {\n"
 	else
-		echo "{\"hardware_lst\":{" >> "${FICHIERJSON}"
-	fi
-	
+		echo "{\"hardware_lst\":{" > "${FICHIERJSON}"
+	fi	
 }
 json_end(){
 	val_format="$1"
@@ -188,7 +204,7 @@ json_encode(){
 	if [ "$val_format" -eq 1 ];then 		
 		echo -e "\t\t\"label\": \"$val_label\",\n\t\t\"value\": \"$val_value\""
 	else
-		echo "\"label\": \"$val_label\",\"value\": \"$val_value\"" >> "${FICHIERJSON}" 
+		echo "\"$val_label\" : \"$val_value\"" >> "${FICHIERJSON}" 
 	fi
 	
 }
@@ -196,9 +212,11 @@ json_encode(){
 # TEST PRE-REQUIS
 printMessageTo  "             CONTROLE APPLI										" "3" 
 # Vérifier que l'utilisateur est root
-checkUserRoot
+# checkUserRoot
 # Vérifier que perl est installé pour la gestion des mots de passe
 checkAppli perl
+# Vérifier que jq librairie pour parser le json
+checkAppli jq
 ##################################################################################################################
 
 ##################################################################################################################
@@ -211,6 +229,9 @@ json_start $val_format $val_print
 # recuperation des elements
 get_hostname $val_format $val_print
 get_os $val_format $val_print 
+get_ip_public $val_format $val_print 
+
+# Affichage des resultats hostname
 get_osinfo "$OS" "OS" $val_format $val_print 
 get_osinfo "$DIST" "Distribution" $val_format $val_print 
 get_osinfo "$DistroBasedOn" "DistributionBasedOn" $val_format $val_print 
@@ -218,19 +239,18 @@ get_osinfo "$PSUEDONAME" "Login" $val_format $val_print
 get_osinfo "$REV" "Revision" $val_format $val_print 
 get_osinfo "$KERNEL" "Kernel" $val_format $val_print 
 get_osinfo "$MACH" "Hardware" $val_format $val_print 
+# Affichage des resultat IPPUBLIC
+get_osinfo "$IPPUBADR" "IpPub" $val_format $val_print
+get_osinfo "$IPPUBNOM" "IpPubHostname" $val_format $val_print
+get_osinfo "$IPPUBVIL" "IpPubCity" $val_format $val_print
+get_osinfo "$IPPUBREG" "IpPubRegion" $val_format $val_print
+get_osinfo "$IPPUBPAY" "IpPubCountry" $val_format $val_print
+get_osinfo "$IPPUBLOC" "IpPubLocation" $val_format $val_print
+get_osinfo "$IPPUBFOU" "IpPubProvider" $val_format $val_print
+
 # fin du fichier json
 json_end $val_format $val_print
 exit 1
-
-printMessageTo  "    OS	 " "2"
-cat /etc/lsb-release
-cat /proc/version
-
-printMessageTo  "    ARCHITECTURE	 " "2"
-uname -i
-
-printMessageTo  "    PROCESSEUR	 " "2"
-cat /proc/cpuinfo |grep "model name"
 
 printMessageTo  "    ESPACE DISQUE	 " "2"
 df -h

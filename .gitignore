@@ -33,6 +33,8 @@ SHELL-UNIX/config/config.dist
 # fichier dump sql
 /BDD-MYSQL/dmp/
 *.dmp
+# fichier json
+*.json
 #################
 ## Fichier de log
 #################
