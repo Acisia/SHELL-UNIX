@@ -37,14 +37,14 @@ if [ $1 ];then
 	printMessageTo "\033[32m[FORMATAGE][OK]\033[0m " "2"
 else
 	val_format=0
-	printMessageTo "\033[31m[FORMATAGE][KO]\033[0m " "2"
+	printMessageTo "\033[36m[FORMATAGE][KO]\033[0m " "2"
 fi
 if [ $2 ];then
 	val_print=1
 	printMessageTo "\033[32m[PRINT][OK]\033[0m " "2"
 else
 	val_print=0
-	printMessageTo "\033[31m[PRINT][KO]\033[0m " "2"
+	printMessageTo "\033[36m[PRINT][KO]\033[0m " "2"
 fi
 ##################################################################################################################
 # FONCTIONS
@@ -59,8 +59,11 @@ installPaquet() {
 }
 checkLsbRelease() {
 	val_lsbrelease=`lsb_release`
-	if [ "$val_lsbrelease" = "No LSB modules are available." ];then
+	val_result=$?
+	if [ $val_result -eq 1 ];then				
 		installPaquet lsb-core
+	elif [ $val_result -eq 127 ];then
+		installPaquet lsb-core		
 	else 
 		printMessageTo "\033[32m[LSB_RELEASE][OK]\033[0m " "2"
 	fi
@@ -166,6 +169,29 @@ get_ip_public(){
 	readonly IPPUBLOC
 	readonly IPPUBFOU	
 }
+get_ip_local(){
+	IPLOCADR=`ifconfig | perl -nle 's/dr:(\S+)/print $1/e'| tr '\n' ','`
+	#netstat -i
+	INTERADDRIP=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+	if [ $INTERADDRIP ] ;then
+		IPLOCADRA=$INTERADDRIP
+	else
+		INTERADDRIP=`ip addr | grep 'global' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+		IPLOCADRA=$INTERADDRIP
+	fi
+
+	readonly IPLOCADR
+	readonly IPLOCADRA
+}
+get_disque_info(){
+	 DISKINFO=`df -h |sed 1d |awk '{print $1":"$2}'| tr '\n' ','`
+	 readonly DISKINFO
+}
+get_ram_info(){
+	 RAMINFO=` free -h |sed 1d |awk '{print $1","$2; FS=":"}'`
+	 
+	 readonly RAMINFO
+}
 # JSON ---------------------------------------------
 json_start(){
 	val_format="$1"
@@ -217,6 +243,13 @@ printMessageTo  "             CONTROLE APPLI										" "3"
 checkAppli perl
 # Vérifier que jq librairie pour parser le json
 checkAppli jq
+if [ $? -eq 0 ];then			
+		installPaquet jq
+	fi	
+checkAppli curl
+if [ $? -eq 0 ];then			
+		installPaquet curl
+	fi
 ##################################################################################################################
 
 ##################################################################################################################
@@ -230,6 +263,10 @@ json_start $val_format $val_print
 get_hostname $val_format $val_print
 get_os $val_format $val_print 
 get_ip_public $val_format $val_print 
+get_ip_local $val_format $val_print
+get_disque_info $val_format $val_print
+get_ram_info  $val_format $val_print
+
 
 # Affichage des resultats hostname
 get_osinfo "$OS" "OS" $val_format $val_print 
@@ -247,26 +284,18 @@ get_osinfo "$IPPUBREG" "IpPubRegion" $val_format $val_print
 get_osinfo "$IPPUBPAY" "IpPubCountry" $val_format $val_print
 get_osinfo "$IPPUBLOC" "IpPubLocation" $val_format $val_print
 get_osinfo "$IPPUBFOU" "IpPubProvider" $val_format $val_print
-
+# Affichage des resultats IPLOCAL
+get_osinfo "$IPLOCADRA" "IpLoc" $val_format $val_print
+get_osinfo "$IPLOCADR" "IpLocLst" $val_format $val_print
+# Affichage des resultat DISQUE
+get_osinfo "$DISKINFO" "DiskInfo" $val_format $val_print
+get_osinfo "$RAMINFO" "RamInfo" $val_format $val_print
 # fin du fichier json
 json_end $val_format $val_print
 exit 1
 
 printMessageTo  "    ESPACE DISQUE	 " "2"
 df -h
-
-printMessageTo  "    LISTE DES INTERFACES RESEAUX	 " "2"
-ifconfig | perl -nle 's/dr:(\S+)/print $1/e'
-netstat -i
-
-printMessageTo  "    ADRESSE IP UP	 " "2"
-INTERADDRIP=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
-if [ $INTERADDRIP ] ;then
-	echo $INTERADDRIP
-else
-	INTERADDRIP=`ip addr | grep 'global' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
-	echo $INTERADDRIP
-fi
 
 printMessageTo  "    LISTE DES UTILISATEURS CONNECTES	 " "2"
 w
