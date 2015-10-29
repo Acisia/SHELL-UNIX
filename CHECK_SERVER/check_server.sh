@@ -153,7 +153,7 @@ get_os(){
 fi
 }
 get_ip_public(){
-	IPPUB=`curl 'ipinfo.io' | jq '.ip,.hostname,.city,.region,.country,.loc,.org'`
+	IPPUB=`curl -s 'ipinfo.io' | jq '.ip,.hostname,.city,.region,.country,.loc,.org'`
 	IPPUBADR=`echo $IPPUB |cut -d "\"" -f2`
 	IPPUBNOM=`echo $IPPUB |cut -d "\"" -f4`
 	IPPUBVIL=`echo $IPPUB |cut -d "\"" -f6`
@@ -184,22 +184,51 @@ get_ip_local(){
 	readonly IPLOCADRA
 }
 get_disque_info(){
-	 DISKINFO=`df -h |sed 1d |awk '{print $1":"$2}'| tr '\n' ','`
+	 DISKINFO=`df -h |sed 1d |awk '{print $1":"$2}'| tr '\n' ','`	 
+	 DISKINFOUSED=`df -h |sed 1d |awk '{print $1":"$3}'| tr '\n' ','`	 	 
+	 DISKINFOAVAIL=`df -h |sed 1d |awk '{print $1":"$4}'| tr '\n' ','`	 
+	 DISKINFOUSE=`df -h |sed 1d |awk '{print $1":"$5}'| tr '\n' ','`	 
+	 DISKINFOMOUNT=`df -h |sed 1d |awk '{print $1":"$6}'| tr '\n' ','`
 	 readonly DISKINFO
+	 readonly DISKINFOUSED
+	 readonly DISKINFOAVAIL
+	 readonly DISKINFOUSE
+	 readonly DISKINFOMOUNT
 }
 get_ram_info(){
-	 RAMINFO=` free -h |sed 1d |awk '{print $1","$2; FS=":"}'`
-	 
+	 RAMINFO=`free -h|sed 1d| sed -re 's/-\/\+//g' |awk '{print $1$2}'| tr '\n' ','`
+	 RAMINFOUSED=`free -h|sed 1d| sed -re 's/-\/\+//g' |awk '{print $1$3}'| tr '\n' ','`
+	 RAMINFOAVAIL=`free -h|sed 1d| sed -re 's/-\/\+//g' |awk '{print $1$4}'| tr '\n' ','`
 	 readonly RAMINFO
+	 readonly RAMINFOUSED
+	 readonly RAMINFOAVAIL
+}
+get_service_installed(){
+	val_format="$1"
+	val_print="$2"
+	dpkg-query -l |sed '1,5d' |while read id name version architecture description ; do 
+		get_osinfo "$version" "$name"  $val_format $val_print ;
+	 done
 }
 # JSON ---------------------------------------------
 json_start(){
 	val_format="$1"
 	val_print="$2"
+	val_name="$3"
 	if [ "$val_format" -eq 1 ];then 		
-		echo -e "{\n\t\"hardware_lst\": {\n"
+		echo -e "{\n\t\"$val_name\": {\n"
 	else
-		echo "{\"hardware_lst\":{" > "${FICHIERJSON}"
+		echo "{\"$val_name\":{" > "${FICHIERJSON}"
+	fi	
+}
+json_sub_start(){
+	val_format="$1"
+	val_print="$2"
+	val_name="$3"
+	if [ "$val_format" -eq 1 ];then 		
+		echo -e "}\n\t\"$val_name\": {\n"
+	else
+		echo "}\"$val_name\":{" >> "${FICHIERJSON}"
 	fi	
 }
 json_end(){
@@ -257,8 +286,7 @@ if [ $? -eq 0 ];then
 # Vérifier que l'utilisateur est root
 printMessageTo  "    PROCESS $NOMPROJECTSCRIPT START	 " "3" 
 checkLsbRelease
-# debut du fichier json
-json_start $val_format $val_print
+
 # recuperation des elements
 get_hostname $val_format $val_print
 get_os $val_format $val_print 
@@ -267,7 +295,8 @@ get_ip_local $val_format $val_print
 get_disque_info $val_format $val_print
 get_ram_info  $val_format $val_print
 
-
+# debut du fichier json
+json_start $val_format $val_print  "HARDWARE_INFO"
 # Affichage des resultats hostname
 get_osinfo "$OS" "OS" $val_format $val_print 
 get_osinfo "$DIST" "Distribution" $val_format $val_print 
@@ -277,6 +306,7 @@ get_osinfo "$REV" "Revision" $val_format $val_print
 get_osinfo "$KERNEL" "Kernel" $val_format $val_print 
 get_osinfo "$MACH" "Hardware" $val_format $val_print 
 # Affichage des resultat IPPUBLIC
+json_sub_start $val_format $val_print "NETWORK_PUBLIC_INFO"
 get_osinfo "$IPPUBADR" "IpPub" $val_format $val_print
 get_osinfo "$IPPUBNOM" "IpPubHostname" $val_format $val_print
 get_osinfo "$IPPUBVIL" "IpPubCity" $val_format $val_print
@@ -285,11 +315,24 @@ get_osinfo "$IPPUBPAY" "IpPubCountry" $val_format $val_print
 get_osinfo "$IPPUBLOC" "IpPubLocation" $val_format $val_print
 get_osinfo "$IPPUBFOU" "IpPubProvider" $val_format $val_print
 # Affichage des resultats IPLOCAL
+json_sub_start $val_format $val_print "NETWORK_LOCAL_INFO"
 get_osinfo "$IPLOCADRA" "IpLoc" $val_format $val_print
 get_osinfo "$IPLOCADR" "IpLocLst" $val_format $val_print
 # Affichage des resultat DISQUE
+json_sub_start $val_format $val_print "DISK_INFO"
 get_osinfo "$DISKINFO" "DiskInfo" $val_format $val_print
+get_osinfo "$DISKINFOUSED" "DiskInfoUsed" $val_format $val_print
+get_osinfo "$DISKINFOAVAIL" "DiskInfoAvailable" $val_format $val_print
+get_osinfo "$DISKINFOUSE" "DiskInfoUse" $val_format $val_print
+get_osinfo "$DISKINFOMOUNT" "DiskInfoMountedOn" $val_format $val_print
 get_osinfo "$RAMINFO" "RamInfo" $val_format $val_print
+get_osinfo "$RAMINFOUSED" "RamInfoUsed" $val_format $val_print
+get_osinfo "$RAMINFOAVAIL" "RamInfoAvailable" $val_format $val_print
+
+json_sub_start $val_format $val_print "SERVICES_INFO"
+# Affichage liste des services
+get_service_installed  $val_format $val_print
+
 # fin du fichier json
 json_end $val_format $val_print
 exit 1
