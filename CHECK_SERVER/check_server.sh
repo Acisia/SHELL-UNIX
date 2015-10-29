@@ -59,8 +59,9 @@ installPaquet() {
 }
 checkLsbRelease() {
 	val_lsbrelease=`lsb_release`
-	val_result=$?
-	if [ $val_result -eq 1 ];then				
+	val_error="No LSB modules are available."
+	val_result="$?"
+	if [[ $val_lsbrelease == *$val_error ]];then
 		installPaquet lsb-core
 	elif [ $val_result -eq 127 ];then
 		installPaquet lsb-core		
