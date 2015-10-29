@@ -30,6 +30,8 @@ getMenu() {
 	printMessageTo  " 5 - Serveur Web XAMP" "21" 
 	printMessageTo  " 6 - Check Version" "21" 
 	printMessageTo  " 7 - Install MySql Serveur 5" "21" 
+	printMessageTo  " 8 - Install GitLab" "21" 
+	printMessageTo  " 9 - Supprimer Appache 2" "21" 
 	printMessageTo  " h - Commande " "21" 
 	printMessageTo  " q - Quitter " "21" 
 
@@ -75,12 +77,22 @@ getVersion() {
 		
 	fi	
 }
+get_ip_local(){
+	INTERADDRIP=`ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+	if [ $INTERADDRIP ] ;then
+		IPLOCADRA=$INTERADDRIP
+	else
+		INTERADDRIP=`ip addr | grep 'global' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/'`
+		IPLOCADRA=$INTERADDRIP
+	fi
+	readonly IPLOCADRA
+}
 installDependency() {
     apt-get update
     installPaquet 
     installPaquet build-essential
 	installPaquet apt-show-versions
-    	installPaquet curl
+    installPaquet curl
 	installPaquet git-core 
 	installPaquet automake 
 	installPaquet autogen 
@@ -161,6 +173,24 @@ configLamp() {
 	printMessageTo  "/usr/share/apache2" "2"
 	
 }
+killApache() {
+	#ecoute sur le port 80
+	TESTPROCAPA=`netstat -an|grep :80`
+	if [[ $TESTPROCAPA == "" ]];then
+		printMessageTo  "\033[32m[OK]\033[0m Pas de process sur le port 80" "3" 
+	else
+		printMessageTo  "\033[31m[KO]\033[0m Arret server web" "3" 
+		/etc/init.d/apache2 stop
+	fi
+}
+removeApache() {
+	printMessageTo  "    Suppression Apache 2	 " "3" 
+	killApache
+	apt-get remove apache2
+	apt-get purge apache2
+	post_install
+	rm -r /etc/apache2
+}
 installXamp() {
 	# Installation XAMPP
 	cd /usr/src
@@ -184,10 +214,33 @@ installXamp() {
 	#Sécurité
 	#sudo /opt/lampp/lampp security
 
-	cd /opt/lamp/
+	cd /opt/lamp/ 
+}
+installServeurGitLab(){
+	# Installation GitLab
+	cd /usr/src
+	#1. Install and configure the necessary dependencies
+	apt-get update
+    installPaquet 
+    installPaquet build-essential
+	installPaquet apt-show-versions
+    installPaquet curl
+	installPaquet ca-certificates 
+	installPaquet postfix
+	#2. Add the GitLab package server and install the package
+	curl https://packages.gitlab.com/install/repositories/gitlab/gitlab-ce/script.deb.sh | bash
+	installPaquet gitlab-ce
+	#3. Configure and start GitLab
+	gitlab-ctl reconfigure
+	#4. Browse to the hostname and login
+	echo "-------------------------------------------------"
+	echo " |- Url : http://$IPLOCADRA"
+	echo " |- Username: root"
+	echo " |- Password: 5iveL!fe"
+	echo "-------------------------------------------------"
 }
 ##################################################################################################################
-printMessageTo  "             $NOMPROJECTSCRIPT										" "1" 
+printMessageTo  "             $NOMPROJECTSCRIPT		 								" "1" 
 
 ##################################################################################################################
 #RECUPERATION DES PROPERTIES
@@ -216,6 +269,7 @@ printMessageTo  "    PROCESS $NOMPROJECTSCRIPT START	 " "3"
 cd ~
 
 # affichage menu
+get_ip_local
 getMenu
 
 # traitement du choix
@@ -259,6 +313,14 @@ do
 		 "7" )
 			printMessageTo  "    PROCESS 7: Installation Serveur Mysql 5 " "3" 
 			installServeurBDD
+		 ;;
+		 "8" )
+			printMessageTo  "    PROCESS 8: Installation Serveur GitLab " "3" 
+			installServeurGitLab
+		 ;;
+		 "9" )
+			printMessageTo  "    PROCESS 9: Supprimer Apache 2 " "3" 
+			removeApache
 		 ;;
 		 "h" )
 			getMenu
