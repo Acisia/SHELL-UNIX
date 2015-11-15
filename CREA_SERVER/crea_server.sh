@@ -32,6 +32,8 @@ getMenu() {
 	printMessageTo  " 7 - Install MySql Serveur 5" "21" 
 	printMessageTo  " 8 - Install GitLab" "21" 
 	printMessageTo  " 9 - Supprimer Appache 2" "21" 
+	printMessageTo  " 10 - Installation Jeedom" "21" 
+	printMessageTo  " 11 - Installation xPL" "21" 
 	printMessageTo  " h - Commande " "21" 
 	printMessageTo  " q - Quitter " "21" 
 
@@ -101,7 +103,21 @@ installDependency() {
 	installPaquet ruby
 	installPaquet ruby-dev
 	installPaquet imagemagick 
-	installPaquet libmagickwand-dev
+}
+installRaspDependency() {
+    apt-get update
+    installPaquet 
+    installPaquet build-essential
+    installPaquet curl
+	installPaquet git-core 
+	installPaquet libyaml-perl 
+	installPaquet libyaml-syck-perl
+	installPaquet libsub-name-perl 
+    installPaquet libanyevent-perl 
+    installPaquet libdatetime-format-dateparse-perl 
+    installPaquet libconfig-yaml-perl 
+    installPaquet librrds-perl 
+    installPaquet libio-all-perl
 }
 installServeurBDD() {
 	installPaquet mysql-server-5.5
@@ -239,6 +255,38 @@ installServeurGitLab(){
 	echo " |- Password: 5iveL!fe"
 	echo "-------------------------------------------------"
 }
+installServeurJeedom(){
+	# Installation Jeedom
+	cd /usr/src
+	#1. Install and configure the necessary dependencies
+	apt-get update
+	apt-get upgrade
+    wget -q https://raw.githubusercontent.com/jeedom/core/stable/install/install.sh
+	chmod 777 install.sh
+	./install.sh
+	#2. installation razberry.z-wave.me
+	wget -q -O - razberry.z-wave.me/install | bash
+	service mongoose stop
+	update-rc.d mongoose remove
+	service nginx restart
+	#3. droit root
+	echo "www-data ALL=(ALL) NOPASSWD: ALL" | (EDITOR="tee -a" visudo)
+	#4. Browse to the hostname and login
+	echo "-------------------------------------------------"
+	echo " |- Url : http://$IPLOCADRA/jeedom"
+	echo " |- Username: admin"
+	echo " |- Password: admin"
+	echo "-------------------------------------------------"
+}
+installServeurxPL(){
+	cd /usr/src
+	wget http://www.xpl4java.org/xPL4Linux/downloads/xPLLib.tgz
+	tar -xzvf xPLLib.tg
+	cd xPLLib
+	make
+	cd examples
+	make
+}
 ##################################################################################################################
 printMessageTo  "             $NOMPROJECTSCRIPT		 								" "1" 
 
@@ -291,6 +339,11 @@ do
 			# Installation Package essentiel
 			installDependency
 		 ;;
+		  "21" )
+			printMessageTo  "    PROCESS 21: Pre-requis et dependances " "3" 
+			# Installation Package essentiel
+			installRaspDependency
+		 ;;
 		 "3" )
 			printMessageTo  "    PROCESS 3: Serveur web Lamp " "3" 
 			installLamp			
@@ -321,6 +374,14 @@ do
 		 "9" )
 			printMessageTo  "    PROCESS 9: Supprimer Apache 2 " "3" 
 			removeApache
+		 ;;
+		  "10" )
+			printMessageTo  "    PROCESS 10: Installation Jeedom " "3" 
+			installServeurJeedom
+		 ;;
+		 "11" )
+			printMessageTo  "    PROCESS 11: Installation xPL " "3" 
+			installServeurxPL
 		 ;;
 		 "h" )
 			getMenu
