@@ -25,6 +25,7 @@ getMenu() {
 	printMessageTo  "Faites votre choix dans la liste suivante : " "2" 
 	printMessageTo  " 1 - Cle apt/source.list" "21" 
 	printMessageTo  " 2 - Pre-requis et dependances" "21" 
+	printMessageTo  " 21 - Pre-requis et dependances pour Raspberry" "21" 
 	printMessageTo  " 3 - Serveur Web standard LAMP" "21" 
 	printMessageTo  " 4 - Configuration Web standard LAMP" "21" 
 	printMessageTo  " 5 - Serveur Web XAMP" "21" 
