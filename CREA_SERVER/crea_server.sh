@@ -287,6 +287,8 @@ installServeurxPL(){
 	make
 	cd examples
 	make
+	file xPL_Hub
+	cp xPL_Hub /usr/local/bin
 }
 ##################################################################################################################
 printMessageTo  "             $NOMPROJECTSCRIPT		 								" "1" 
