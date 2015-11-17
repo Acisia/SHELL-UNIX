@@ -282,7 +282,7 @@ installServeurJeedom(){
 installServeurxPL(){
 	cd /usr/src
 	wget http://www.xpl4java.org/xPL4Linux/downloads/xPLLib.tgz
-	tar -xzvf xPLLib.tg
+	tar -xzvf xPLLib.tgz
 	cd xPLLib
 	make
 	cd examples
