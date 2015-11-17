@@ -289,6 +289,18 @@ installServeurxPL(){
 	make
 	file xPL_Hub
 	cp xPL_Hub /usr/local/bin
+	#librairie et logger
+	cd /usr/src
+	wget https://github.com/downloads/beanz/xpl-perl/xPL-Perl-0.12.tar.gz
+	tar -xzvf xPL-Perl-0.12.tar.gz
+	cd xPL-Perl-0.12
+    perl Makefile.PL
+    make    
+    make install
+	echo "A installer"
+	perl -MCPAN -e shell
+	echo install YAML::Syck
+	echo quit;
 }
 ##################################################################################################################
 printMessageTo  "             $NOMPROJECTSCRIPT		 								" "1" 
