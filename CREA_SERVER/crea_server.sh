@@ -297,7 +297,10 @@ installServeurxPL(){
     perl Makefile.PL
     make    
     make install
-	echo "A installer"
+	echo "--------------------"
+	echo " A installer a la main "
+	echo " install YAML::Syck "
+	echo "--------------------"
 	perl -MCPAN -e shell
 	echo install YAML::Syck
 	echo quit;
