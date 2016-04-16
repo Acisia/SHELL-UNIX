@@ -305,9 +305,11 @@ installServeurxPL(){
 	echo install YAML::Syck
 	echo quit;
 	echo "--------------------"
-	echo "Vérifier /etc/hostname"
-	echo "Vérifier /etc/hosts"
-	echo "  ajouter adresse Ip et mettre un # devant 127.0.1.1."
+	echo " 1 - Vérifier /etc/hostname"
+	echo " 2 - Vérifier /etc/hosts"
+	echo "   2.1 - ajouter adresse Ip et mettre un # devant 127.0.1.1."
+	echo " 3 - Ajouter à /etc/rc.local "
+	echo "   3.1 - /usr/local/bin/xPL_Hub avant exit0"
 	echo "--------------------"
 }
 ##################################################################################################################
