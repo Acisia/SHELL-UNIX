@@ -304,6 +304,11 @@ installServeurxPL(){
 	perl -MCPAN -e shell
 	echo install YAML::Syck
 	echo quit;
+	echo "--------------------"
+	echo "Vérifier /etc/hostname"
+	echo "Vérifier /etc/hosts"
+	echo "  ajouter adresse Ip et mettre un # devant 127.0.1.1."
+	echo "--------------------"
 }
 ##################################################################################################################
 printMessageTo  "             $NOMPROJECTSCRIPT		 								" "1" 
