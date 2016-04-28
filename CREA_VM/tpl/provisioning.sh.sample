@@ -147,6 +147,8 @@ if [ $? -eq 0 ]; then
 	apt-get install openhab-addon-binding-astro
 	apt-get install openhab-addon-action-weather
 	apt-get install openhab-addon-binding-weather	
+	apt-get install openhab-addon-binding-http
+	apt-get install openhab-addon-binding-ntp
 	printMessageTo  " Ajout utilisateur openhab" "2"
 	usermod -a -G dialout openhab
 	printMessageTo  " Lister les interfaces reseaux	 " "2"
