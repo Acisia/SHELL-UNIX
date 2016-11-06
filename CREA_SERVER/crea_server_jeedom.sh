@@ -39,7 +39,7 @@ install_msg_fr() {
 	msg_install_dependency="\033[35m[02]\035[0m Mise à jour du système"
 	msg_install_dependency="\033[35m[03]\035[0m Installation des dépendances"
 	msg_install_test="\033[35m[FIN]\035[0m Test de l'application"
-	
+}	
 ############################ Fonctions ##############################
 #
 setup_i18n() {
