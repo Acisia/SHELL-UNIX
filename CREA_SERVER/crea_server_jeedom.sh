@@ -321,7 +321,7 @@ do
 		 ;;
 		  "4" )
 			printMessageTo  "    PROCESS 4: Installation xPL " "3" 
-			configLamp
+			installServeurxPL
 			exit 1
 		 ;;
 		 "5" )
@@ -331,7 +331,7 @@ do
 		 ;;
 		 "6" )
 			printMessageTo  "    PROCESS 6: Installation Wifi " "3" 
-			checkServeurWeb
+			installWifi
 		 ;;
 		 "7" )
 			printMessageTo  "    PROCESS 7: Installation Svox " "3" 
