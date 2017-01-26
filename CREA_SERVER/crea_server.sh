@@ -262,7 +262,8 @@ installServeurJeedom(){
 	#1. Install and configure the necessary dependencies
 	apt-get update
 	apt-get upgrade
-    wget -q https://raw.githubusercontent.com/jeedom/core/stable/install/install.sh
+    wget -q https://raw.githubusercontent.com/jeedom/core/stable/install/install.sh    
+        chmod +x install.sh
 	chmod 777 install.sh
 	./install.sh
 	#2. installation razberry.z-wave.me
